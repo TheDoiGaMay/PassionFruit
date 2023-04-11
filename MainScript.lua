@@ -30,7 +30,7 @@ end
 local function LoadFileFromRepos(scripturl)
 	if shared.IClientDev then
 		if not IsBetterFile(MainFileDirectory.. "/" .. scripturl) then
-			warn("File not found : IClientCodeRework/" .. scripturl)
+			warn("File not found : "..MainFileDirectory.."/" .. scripturl)
 			return
 		end
 		return readfile(MainFileDirectory .. "/" .. scripturl)
