@@ -5,10 +5,7 @@ repeat
 until game:IsLoaded() == true
 
 --// Main Service
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-
 
 --// Varibles
 local LocalPlayer = Players.LocalPlayer
@@ -37,7 +34,7 @@ local function LoadFileFromRepos(scripturl)
 		end
 		return readfile(MainFileDirectory .. "/" .. scripturl)
 	else
-		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/IClientRework/main/" .. scripturl, true)
+		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileDirectory .."/master/" .. scripturl, true)
 		assert(res ~= "404: Not Found", "File not found")
 		return res
 	end
