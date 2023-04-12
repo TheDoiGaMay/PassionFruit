@@ -1235,7 +1235,14 @@ function UILibrary:new()
 		end
 
 		function ModMenu:RemoveTab()
+			if UILibrary.CurrentTabSelect == theTab then
+				UILibrary.CurrentTabSelect = nil
+			end
+			if UILibrary.CurrentModSelect == modCategory then
+				UILibrary.CurrentModSelect = nil
+			end
 			theTab:Destroy()
+			modCategory:Destroy()
 			CurrentUICreated[TabName] = nil
 		end
 		CurrentUICreated[TabName] = ModMenu
