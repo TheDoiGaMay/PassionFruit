@@ -356,7 +356,6 @@ local UIConfigFrame = {
 			zip.Position = UDim2.new((tochange or 0) / Config.Max, -6, -0.644999981, 0)
 			valueLabel.Text = tostring(tochange and math.floor((tochange / Config.Max) * (Config.Max - Config.Min) + Config.Min) or 0)
 		end
-		print("Created Config",Config.Default)
 		Changed(Config.Default)
 		return
 	end,
@@ -516,7 +515,7 @@ local UIConfigFrame = {
 		local togglefunc = {}
 		function togglefunc:ForceToggle()
 			Config.Value = not Config.Value
-			SaveProp[Config.DisplayText] = Config.Value
+			--SaveProp[Config.DisplayText] = Config.Value
 			ModToggleChanged(Config.Value)
 			if Config.Callback then
 				Config.Callback(Config.Value)
@@ -924,7 +923,7 @@ function UILibrary:new()
 			IClientYesTarget = shared.IClientToggledProperty[modproperty.ModName]
 
 			for i , v in pairs(modconfiguration) do
-				if v.Type == "Slider" then
+				if v.ConfigType == "Slider" then
 					v.Default = IClientYesTarget[v.DisplayText]
 				else
 					if v.Value then
@@ -1213,7 +1212,7 @@ function UILibrary:new()
 					Enum.FontWeight.Bold,
 					Enum.FontStyle.Normal
 				)
-				keybindText.Text = modproperty.Keybind
+				keybindText.Text = IClientYesTarget.Keybind or modproperty.Keybind
 				keybindText.TextColor3 = Color3.fromRGB(236, 244, 255)
 				keybindText.TextSize = 14
 				keybindText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1239,12 +1238,13 @@ function UILibrary:new()
 						isBinded.Visible = false
 						modproperty.Keybind = "None"
 					end
+					IClientYesTarget.Keybind = modproperty.Keybind
 					keybindText.Text = modproperty.Keybind
 					issettingkeybind = false
 				end)
 
 				for i, v in pairs(modconfiguration) do
-
+					print("BEfore:",v.Value or v.Default)
 					local Createnewconfigtype = UIConfigFrame[v.ConfigType](v, configList,IClientYesTarget)
 				end
 
@@ -1254,7 +1254,7 @@ function UILibrary:new()
 
 			game:GetService("UserInputService").InputBegan:connect(function(current, pressed)
 				if not pressed and not issettingkeybind then
-					if current.KeyCode.Name == modproperty.Keybind then
+					if current.KeyCode.Name == modproperty.Keybind or current.KeyCode.Name == IClientYesTarget.Keybind then
 						IsToggled = not IsToggled
 						ModToggleChanged(IsToggled)
 						ToggleToggle:ForceToggle()
