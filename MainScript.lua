@@ -115,8 +115,7 @@ local PlaceId = game.PlaceId
 local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
 
 local success2, result2 = pcall(function()
-	return game:GetService("HttpService"):JSONDecode(
-        readfile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt"))
+	return game:GetService("HttpService"):JSONDecode(readfile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. ".txt"))
 end)
 
 if success2 and result2 then
@@ -124,7 +123,7 @@ if success2 and result2 then
 		shared.IClientToggledProperty[i] = v
 	end
 else
-    writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
+    writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. ".txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
 end
 
 
@@ -133,7 +132,7 @@ LocalPlayer.OnTeleport:Connect(function(State)
 	local PlaceId = game.PlaceId
 	local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
 	print("Passion: Saving " .. GetSelectConfig .. "'s Config")
-	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
+	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. ".txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
 
 	local teleportScript = [[
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))()
