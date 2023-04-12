@@ -9,6 +9,6 @@ local UtilityTab = MainGui:newtab("Utility")
 local CosmeticTab = MainGui:newtab("Cosmetic")
 
 task.wait(1)
-print(HttpService:JSONDecode(MainGui))
+print(HttpService:JSONEncode(MainGui))
 local GetCombatTab = MainGui:findTab("Combat")
 GetCombatTab:RemoveTab()
