@@ -330,7 +330,6 @@ local UIConfigFrame = {
 			valueLabel.Text = tostring(value)
 			Config.Default = value
 			SaveProp[Config.DisplayText] = value
-
 			pcall(Config.Callback, value)
 		end
 
@@ -350,11 +349,14 @@ local UIConfigFrame = {
 			end
 		end)
 
+
 		local function Changed(tochange)
+			print(Config.Default)
 			currentValueFrame.Size = UDim2.new((tochange or 0) / Config.Max, 0, 0, 8)
 			zip.Position = UDim2.new((tochange or 0) / Config.Max, -6, -0.644999981, 0)
 			valueLabel.Text = tostring(tochange and math.floor((tochange / Config.Max) * (Config.Max - Config.Min) + Config.Min) or 0)
 		end
+		print("Created Config",Config.Default)
 		Changed(Config.Default)
 		return
 	end,
@@ -917,19 +919,21 @@ function UILibrary:new()
 						shared.IClientToggledProperty[modproperty.ModName][v.DisplayText] = v.Default or v.Value or nil
 					end
 				end
-				
-				for i , v in pairs(modconfiguration) do
-					if v.Type == "Slider" then
-						v.Default = shared.IClientToggledProperty[modproperty.ModName][v.DisplayText]
-					else
-						if v.Value then
-							v.Value = shared.IClientToggledProperty[modproperty.ModName][v.DisplayText]
-						end
+			end
+
+			IClientYesTarget = shared.IClientToggledProperty[modproperty.ModName]
+
+			for i , v in pairs(modconfiguration) do
+				if v.Type == "Slider" then
+					v.Default = IClientYesTarget[v.DisplayText]
+				else
+					if v.Value then
+						v.Value = IClientYesTarget[v.DisplayText]
 					end
 				end
-
 			end
-			IClientYesTarget = shared.IClientToggledProperty[modproperty.ModName]
+
+			print(HttpService:JSONEncode(IClientYesTarget))
 			local mod = Instance.new("Frame")
 			mod.Name = "Mod"
 			mod.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
@@ -1061,7 +1065,7 @@ function UILibrary:new()
 			toggle.Parent = mod
 			mod.Parent = modCategory
 
-			local IsToggled = false
+			local IsToggled = IClientYesTarget.Toggled
 			local issettingkeybind = false
 			local function ModToggleChanged(NewToggle)
 				if NewToggle == true then
@@ -1154,7 +1158,7 @@ function UILibrary:new()
 						IsToggled = Value
 						ModToggleChanged(Value)
 					end,
-					Value = shared.IClientToggledProperty[modproperty.ModName].Toggled or IsToggled,
+					Value = IsToggled,
 				}
 
 				ToggleToggle = UIConfigFrame[TheTable.ConfigType](TheTable, configList)
