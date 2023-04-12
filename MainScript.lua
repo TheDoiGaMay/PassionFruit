@@ -12,7 +12,6 @@ local LocalPlayer = Players.LocalPlayer
 local MainFileDirectory = "IClientRework"
 local MainCodeDirectory = "IClientReworkCode"
 local MainFileWebsiteDirectory = "PassionFruit"
-local teleportedServers = false
 
 repeat
 	task.wait(1)
@@ -48,7 +47,7 @@ local getasset = getsynasset or getcustomasset or function(location)
 	return "rbxasset://" .. location
 end
 
-local queueteleport = syn and syn.queue_on_teleport or queue_on_teleport or fluxus and fluxus.queue_on_teleport or function() end
+local queueteleport = syn and syn.queue_on_teleport or queue_on_teleport or function() end
 local requestfunc = syn and syn.request or http and http.request or http_request or fluxus and fluxus.request or request or function(tab)
 	if tab.Method == "GET" then
 		return {
@@ -104,21 +103,23 @@ end)
 if not success2 or not result2 then
 	writefile(MainFileDirectory.."/SettingsSelecting/" .. game.PlaceId .. ".txt", "MainSetting")
 end
-local teleportConnection = Players.LocalPlayer.OnTeleport:Connect(function(State)
-    if (not teleportedServers) then
-		teleportedServers = true
-		local teleportScript = [[
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))
-		]]
-		
-		if shared.PassionFruitDev then 
-			teleportScript = "shared.PassionFruitDev = true \n"..teleportScript
-		end
-		local PlaceId = game.PlaceId
-		local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
-		writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
-		queueteleport(teleportScript)
-    end
+
+LocalPlayer.OnTeleport:Connect(function(State)
+
+	local PlaceId = game.PlaceId
+	local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
+	print("Passion: Saving")
+	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
+
+	local teleportScript = [[
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))
+	]]
+	
+	if shared.PassionFruitDev then 
+		teleportScript = "shared.PassionFruitDev = true \n"..teleportScript
+	end
+	
+	queueteleport(teleportScript)
 end)
 
 

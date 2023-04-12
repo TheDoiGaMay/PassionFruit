@@ -28,5 +28,15 @@ GetCombatTab:newmod(
             Min = 1,
             Max = (10+10),
         },
+        [1] = {
+            DisplayText = "CPS3",
+            ConfigType = "Slider",
+            Callback = function(Value)
+                print("PassionFruit555")
+            end,
+            Default = 5,
+            Min = 1,
+            Max = (10+10),
+        },
     }
 )
