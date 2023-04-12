@@ -519,11 +519,11 @@ local UIConfigFrame = {
 	end,
 }
 
-function UILibrary:FindTab(TabName:string)
+function UILibrary:findTab(TabName:string)
 	return CurrentUICreated[TabName]
 end
 
-function UILibrary:FindMod(TabName:string, ModName:string)
+function UILibrary:findMod(TabName:string, ModName:string)
 	return CurrentUICreated[TabName][ModName]
 end
 

@@ -1,3 +1,4 @@
+local HttpService = game:GetService("HttpService")
 
 
 local MainGui = shared.PassionFruitMainGui
@@ -8,5 +9,6 @@ local UtilityTab = MainGui:newtab("Utility")
 local CosmeticTab = MainGui:newtab("Cosmetic")
 
 task.wait(1)
-local GetCombatTab = MainGui:FindTab("Combat")
+print(HttpService:JSONDecode(MainGui))
+local GetCombatTab = MainGui:findTab("Combat")
 GetCombatTab:RemoveTab()
