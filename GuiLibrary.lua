@@ -351,7 +351,6 @@ local UIConfigFrame = {
 
 
 		local function Changed(tochange)
-			print(Config.Default)
 			currentValueFrame.Size = UDim2.new((tochange or 0) / Config.Max, 0, 0, 8)
 			zip.Position = UDim2.new((tochange or 0) / Config.Max, -6, -0.644999981, 0)
 			valueLabel.Text = tostring(tochange and math.floor((tochange / Config.Max) * (Config.Max - Config.Min) + Config.Min) or 0)
@@ -515,7 +514,6 @@ local UIConfigFrame = {
 		local togglefunc = {}
 		function togglefunc:ForceToggle()
 			Config.Value = not Config.Value
-			--SaveProp[Config.DisplayText] = Config.Value
 			ModToggleChanged(Config.Value)
 			if Config.Callback then
 				Config.Callback(Config.Value)
@@ -642,24 +640,24 @@ function UILibrary:new()
 	frame.Size = UDim2.fromScale(1, 0.02)
 	frame.Parent = topBar
 
-	local textLabel1 = Instance.new("TextLabel")
-	textLabel1.Name = "TextLabel"
-	textLabel1.FontFace =
+	local CurrentTabPickingLabel = Instance.new("TextLabel")
+	CurrentTabPickingLabel.Name = "TextLabel"
+	CurrentTabPickingLabel.FontFace =
 		Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-	textLabel1.Text = "Not gaming chair"
-	textLabel1.TextColor3 = Color3.fromRGB(255, 255, 255)
-	textLabel1.TextScaled = true
-	textLabel1.TextSize = 14
-	textLabel1.TextTransparency = 0.3
-	textLabel1.TextWrapped = true
-	textLabel1.TextXAlignment = Enum.TextXAlignment.Left
-	textLabel1.AnchorPoint = Vector2.new(0, 0.5)
-	textLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	textLabel1.BackgroundTransparency = 1
-	textLabel1.BorderSizePixel = 0
-	textLabel1.Position = UDim2.fromScale(0.348, 0.614)
-	textLabel1.Size = UDim2.fromScale(0.316, 0.266)
-	textLabel1.Parent = topBar
+	CurrentTabPickingLabel.Text = "Pick a category"
+	CurrentTabPickingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	CurrentTabPickingLabel.TextScaled = true
+	CurrentTabPickingLabel.TextSize = 14
+	CurrentTabPickingLabel.TextTransparency = 0.3
+	CurrentTabPickingLabel.TextWrapped = true
+	CurrentTabPickingLabel.TextXAlignment = Enum.TextXAlignment.Left
+	CurrentTabPickingLabel.AnchorPoint = Vector2.new(0, 0.5)
+	CurrentTabPickingLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	CurrentTabPickingLabel.BackgroundTransparency = 1
+	CurrentTabPickingLabel.BorderSizePixel = 0
+	CurrentTabPickingLabel.Position = UDim2.fromScale(0.348, 0.614)
+	CurrentTabPickingLabel.Size = UDim2.fromScale(0.316, 0.266)
+	CurrentTabPickingLabel.Parent = topBar
 
 	topBar.Parent = modMenu
 
@@ -903,6 +901,7 @@ function UILibrary:new()
 				{ BackgroundTransparency = 1 }
 			):Play()
 
+			CurrentTabPickingLabel.Text = TabName
 			UILibrary.CurrentTabSelect = theTab
 			UILibrary.CurrentModSelect = modCategory
 		end)
@@ -921,7 +920,6 @@ function UILibrary:new()
 			end
 
 			IClientYesTarget = shared.IClientToggledProperty[modproperty.ModName]
-
 			for i , v in pairs(modconfiguration) do
 				if v.ConfigType == "Slider" then
 					v.Default = IClientYesTarget[v.DisplayText]
@@ -932,7 +930,6 @@ function UILibrary:new()
 				end
 			end
 
-			print(HttpService:JSONEncode(IClientYesTarget))
 			local mod = Instance.new("Frame")
 			mod.Name = "Mod"
 			mod.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
@@ -987,7 +984,7 @@ function UILibrary:new()
 			isBinded.Text = "BINDED"
 			isBinded.TextColor3 = Color3.fromRGB(255, 255, 255)
 			isBinded.TextScaled = true
-			isBinded.Visible = not (modproperty.Keybind == "None")
+			isBinded.Visible =  IClientYesTarget.Keybind and  not ( IClientYesTarget.Keybind == "None") or false
 			isBinded.TextSize = 14
 			isBinded.TextWrapped = true
 			isBinded.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1136,6 +1133,7 @@ function UILibrary:new()
 			ModToggleChanged(IsToggled)
 			toggle.MouseButton1Click:Connect(function()
 				IsToggled = not IsToggled
+				IClientYesTarget.Toggled = IsToggled
 				ModToggleChanged(IsToggled)
 			end)
 
@@ -1160,7 +1158,7 @@ function UILibrary:new()
 					Value = IsToggled,
 				}
 
-				ToggleToggle = UIConfigFrame[TheTable.ConfigType](TheTable, configList)
+				ToggleToggle = UIConfigFrame[TheTable.ConfigType](TheTable, configList,IClientYesTarget)
 
 				modSelectName.Text = modproperty.ModName
 				modDescription.Text = modproperty.ModDescription
@@ -1244,7 +1242,6 @@ function UILibrary:new()
 				end)
 
 				for i, v in pairs(modconfiguration) do
-					print("BEfore:",v.Value or v.Default)
 					local Createnewconfigtype = UIConfigFrame[v.ConfigType](v, configList,IClientYesTarget)
 				end
 
@@ -1252,10 +1249,11 @@ function UILibrary:new()
 				configurationframe.Visible = true
 			end)
 
-			game:GetService("UserInputService").InputBegan:connect(function(current, pressed)
+			game:GetService("UserInputService").InputBegan:Connect(function(current, pressed)
 				if not pressed and not issettingkeybind then
 					if current.KeyCode.Name == modproperty.Keybind or current.KeyCode.Name == IClientYesTarget.Keybind then
 						IsToggled = not IsToggled
+						IClientYesTarget.Toggled = IsToggled
 						ModToggleChanged(IsToggled)
 						ToggleToggle:ForceToggle()
 					end
@@ -1264,6 +1262,7 @@ function UILibrary:new()
 			)
 
 			modCategory.CanvasSize = UDim2.new(0,0,0,uIGridLayout.AbsoluteContentSize.Y)
+			CurrentUICreated[TabName][modproperty.ModName] = mod
 		end
 
 		function ModMenu:RemoveTab()
@@ -1279,9 +1278,7 @@ function UILibrary:new()
 		end
 
 		function ModMenu:RemoveMod(ModName)
-			theTab:Destroy()
-			modCategory:Destroy()
-			CurrentUICreated[TabName] = nil
+			CurrentUICreated[TabName][ModName]:Destroy()
 		end
 
 		CurrentUICreated[TabName] = ModMenu
