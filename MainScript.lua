@@ -29,6 +29,7 @@ end
 
 
 local function LoadFileFromRepos(scripturl)
+	print( shared.PassionFruitDev)
 	if shared.PassionFruitDev then
 		if not IsBetterFile(MainCodeDirectory.. "/" .. scripturl) then
 			warn("File not found : "..MainCodeDirectory.."/" .. scripturl)
@@ -36,7 +37,7 @@ local function LoadFileFromRepos(scripturl)
 		end
 		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
-		print("Looking for file")
+		print("Passion: Looking for github file")
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
 		assert(res ~= "404: Not Found", "File not found")
 		return res
@@ -108,15 +109,15 @@ LocalPlayer.OnTeleport:Connect(function(State)
 
 	local PlaceId = game.PlaceId
 	local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
-	print("Passion: Saving")
+	print("Passion: Saving " .. GetSelectConfig .. "'s Config")
 	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
 
 	local teleportScript = [[
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))()
 	]]
 	
 	if shared.PassionFruitDev then 
-		teleportScript = "shared.PassionFruitDev = true \n"..teleportScript
+		teleportScript = "shared.PassionFruitDev = true; "..teleportScript
 	end
 	
 	queueteleport(teleportScript)

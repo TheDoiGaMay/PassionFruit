@@ -28,7 +28,7 @@ GetCombatTab:newmod(
             Min = 1,
             Max = (10+10),
         },
-        [1] = {
+        [2] = {
             DisplayText = "CPS3",
             ConfigType = "Slider",
             Callback = function(Value)
