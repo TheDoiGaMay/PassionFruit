@@ -1262,7 +1262,7 @@ function UILibrary:new()
 			)
 
 			modCategory.CanvasSize = UDim2.new(0,0,0,uIGridLayout.AbsoluteContentSize.Y)
-			CurrentUICreated[TabName][modproperty.ModName] = mod
+			CurrentUICreated[TabName][modproperty.ModName] = {Frame = mod, callback = callback}
 		end
 
 		function ModMenu:RemoveTab()
@@ -1278,7 +1278,9 @@ function UILibrary:new()
 		end
 
 		function ModMenu:RemoveMod(ModName)
-			CurrentUICreated[TabName][ModName]:Destroy()
+			CurrentUICreated[TabName][ModName].Frame:Destroy()
+			CurrentUICreated[TabName][ModName].callback(false)
+			CurrentUICreated[TabName][ModName].callback = nil
 		end
 
 		CurrentUICreated[TabName] = ModMenu
