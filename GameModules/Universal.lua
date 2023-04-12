@@ -11,8 +11,8 @@ local UtilityTab = MainGui:newtab("Utility")
 local CosmeticTab = MainGui:newtab("Cosmetic")
 local GetCombatTab = MainGui:findTab("Combat")
 
---// Autoclicker Handler
 
+--// Autoclicker Handler
 do
     GetCombatTab:newmod(
     { ModName = "Autoclicker", ModDescription = "Cool way to relax your finger",Keybind= "None" },
@@ -40,6 +40,8 @@ do
     }
 )
 end
+
+
 
 ----------// Trail handler
 do
@@ -106,9 +108,8 @@ do
     )
 end
 
-local capelists = {
-	"None","Normal","Rick Astley"
-}
+
+
 ----------// Cape handler
 do
 
@@ -363,53 +364,4 @@ do
             }
         }
     )
-
-	local WiggleAnimationFrame = shared.TabInGui["Cosmetics"].Dropdown({
-		Text = "Cape",
-		Callback = function(Value)
-			shared.IClientToggledProperty.CosmeticCape = Value
-
-			if Value == "None" then
-
-
-				if Capeconnection then
-					Capeconnection:Disconnect()
-				end
-				if LocalPlayer.Character then
-					for i, v in pairs(LocalPlayer.Character:GetDescendants()) do
-						if v.Name == "Cape" then
-							v:Destroy()
-						end
-					end
-				end
-
-			else
-				Capeconnection = LocalPlayer.CharacterAdded:Connect(function(char)
-					task.spawn(function()
-						pcall(function()
-							if Value == "Rick Astley" then
-								SpecialCape(char, "rbxassetid://880811505")
-							else
-								Cape(char, "rbxassetid://880811505")
-							end
-						end)
-					end)
-				end)
-				if LocalPlayer.Character then
-					task.spawn(function()
-						pcall(function()
-							if Value == "Rick Astley" then
-								SpecialCape(LocalPlayer.Character, "rbxassetid://880811505")
-							else
-								Cape(LocalPlayer.Character, "rbxassetid://880811505")
-							end
-						end)
-					end)
-				end
-			end
-
-		end,
-		Options = capelists,
-	})
-
 end

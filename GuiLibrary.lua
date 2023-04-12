@@ -500,7 +500,6 @@ local UIConfigFrame = {
 			end
 		end
 
-		ModToggleChanged(Config.Value)
 		background.MouseButton1Click:Connect(function()
 			Config.Value = not Config.Value
 			SaveProp[Config.DisplayText] = Config.Value
@@ -519,7 +518,8 @@ local UIConfigFrame = {
 				Config.Callback(Config.Value)
 			end
 		end
-
+		
+		ModToggleChanged(Config.Value)
 		return togglefunc
 	end,
 }
@@ -530,7 +530,7 @@ function UILibrary:new()
 	local passionFruit = Instance.new("ScreenGui")
 	passionFruit.Name = "PassionFruit"
 	passionFruit.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
+	passionFruit.ResetOnSpawn = false
 	local mainGui = Instance.new("Frame")
 	mainGui.Name = "MainGui"
 	mainGui.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -924,7 +924,8 @@ function UILibrary:new()
 				if v.ConfigType == "Slider" then
 					v.Default = IClientYesTarget[v.DisplayText]
 				else
-					if v.Value then
+					if v.Value == nil then
+					else
 						v.Value = IClientYesTarget[v.DisplayText]
 					end
 				end
@@ -1242,6 +1243,7 @@ function UILibrary:new()
 				end)
 
 				for i, v in pairs(modconfiguration) do
+					print(v.Value,v.Default)
 					local Createnewconfigtype = UIConfigFrame[v.ConfigType](v, configList,IClientYesTarget)
 				end
 
@@ -1294,3 +1296,16 @@ end
 
 
 return UILibrary
+
+-----Window
+--  new
+
+-----Tab
+-- findTab
+-- findMod
+-- newtab
+
+-----Mod
+-- newmod
+-- RemoveTab
+-- RemoveMod
