@@ -7,7 +7,7 @@ UILibrary.CurrentModSelect = nil
 local CurrentUICreated = {}
 
 local UIConfigFrame = {
-	["DropDown"] = function(Config,Parent)
+	["DropDown"] = function(Config,Parent,SaveProp)
 		local dropdown = Instance.new("Frame")
 		dropdown.Name = "Dropdown"
 		dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -150,6 +150,7 @@ local UIConfigFrame = {
 				PickChanged()
 				dropdownPlus.Visible = false
 				if Config.Callback then
+					SaveProp[Config.DisplayText] = Config.Value
 					Config.Callback(Config.Value)
 				end
 			end)
@@ -193,7 +194,7 @@ local UIConfigFrame = {
 		label.Parent = Parent
 		return
 	end,
-	["Slider"] = function(Config, Parent)
+	["Slider"] = function(Config, Parent,SaveProp)
 		local dragging = false
 
 		local slider = Instance.new("Frame")
@@ -328,8 +329,11 @@ local UIConfigFrame = {
 			local value = math.floor(((pos.X.Scale * Config.Max) / Config.Max) * (Config.Max - Config.Min) + Config.Min)
 			valueLabel.Text = tostring(value)
 			Config.Default = value
+			SaveProp[Config.DisplayText] = value
+
 			pcall(Config.Callback, value)
 		end
+
 		zip.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 then
 				dragging = true
@@ -349,13 +353,12 @@ local UIConfigFrame = {
 		local function Changed(tochange)
 			currentValueFrame.Size = UDim2.new((tochange or 0) / Config.Max, 0, 0, 8)
 			zip.Position = UDim2.new((tochange or 0) / Config.Max, -6, -0.644999981, 0)
-			valueLabel.Text =
-				tostring(tochange and math.floor((tochange / Config.Max) * (Config.Max - Config.Min) + Config.Min) or 0)
+			valueLabel.Text = tostring(tochange and math.floor((tochange / Config.Max) * (Config.Max - Config.Min) + Config.Min) or 0)
 		end
 		Changed(Config.Default)
 		return
 	end,
-	["Toggle"] = function(Config, Parent)
+	["Toggle"] = function(Config, Parent,SaveProp)
 		local toggle = Instance.new("Frame")
 		toggle.Name = "Toggle"
 		toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -500,6 +503,8 @@ local UIConfigFrame = {
 		ModToggleChanged(Config.Value)
 		background.MouseButton1Click:Connect(function()
 			Config.Value = not Config.Value
+			SaveProp[Config.DisplayText] = Config.Value
+
 			ModToggleChanged(Config.Value)
 			if Config.Callback then
 				Config.Callback(Config.Value)
@@ -509,6 +514,7 @@ local UIConfigFrame = {
 		local togglefunc = {}
 		function togglefunc:ForceToggle()
 			Config.Value = not Config.Value
+			SaveProp[Config.DisplayText] = Config.Value
 			ModToggleChanged(Config.Value)
 			if Config.Callback then
 				Config.Callback(Config.Value)
@@ -902,6 +908,28 @@ function UILibrary:new()
 
 		--// Functions: ModMenu
 		function ModMenu:newmod(modproperty: table, callback, modconfiguration: table)
+
+			local IClientYesTarget
+			if not shared.IClientToggledProperty[modproperty.ModName] then
+				shared.IClientToggledProperty[modproperty.ModName] = {Toggled = false}
+				for i , v in pairs(modconfiguration) do
+					if not shared.IClientToggledProperty[modproperty.ModName][v.DisplayText] then
+						shared.IClientToggledProperty[modproperty.ModName][v.DisplayText] = v.Default or v.Value or nil
+					end
+				end
+				
+				for i , v in pairs(modconfiguration) do
+					if v.Type == "Slider" then
+						v.Default = shared.IClientToggledProperty[modproperty.ModName][v.DisplayText]
+					else
+						if v.Value then
+							v.Value = shared.IClientToggledProperty[modproperty.ModName][v.DisplayText]
+						end
+					end
+				end
+
+			end
+			IClientYesTarget = shared.IClientToggledProperty[modproperty.ModName]
 			local mod = Instance.new("Frame")
 			mod.Name = "Mod"
 			mod.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
@@ -1126,7 +1154,7 @@ function UILibrary:new()
 						IsToggled = Value
 						ModToggleChanged(Value)
 					end,
-					Value = IsToggled,
+					Value = shared.IClientToggledProperty[modproperty.ModName].Toggled or IsToggled,
 				}
 
 				ToggleToggle = UIConfigFrame[TheTable.ConfigType](TheTable, configList)
@@ -1209,11 +1237,11 @@ function UILibrary:new()
 					end
 					keybindText.Text = modproperty.Keybind
 					issettingkeybind = false
-
 				end)
 
 				for i, v in pairs(modconfiguration) do
-					local Createnewconfigtype = UIConfigFrame[v.ConfigType](v, configList)
+
+					local Createnewconfigtype = UIConfigFrame[v.ConfigType](v, configList,IClientYesTarget)
 				end
 
 				modMenu.Visible = false
@@ -1253,7 +1281,6 @@ function UILibrary:new()
 		end
 
 		CurrentUICreated[TabName] = ModMenu
-		print(CurrentUICreated[TabName])
 		return ModMenu
 	end
 

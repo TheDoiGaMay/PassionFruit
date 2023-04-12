@@ -12,6 +12,7 @@ local LocalPlayer = Players.LocalPlayer
 local MainFileDirectory = "IClientRework"
 local MainCodeDirectory = "IClientReworkCode"
 local MainFileWebsiteDirectory = "PassionFruit"
+local teleportedServers = false
 
 repeat
 	task.wait(1)
@@ -63,7 +64,7 @@ local requestfunc = syn and syn.request or http and http.request or http_request
 		}
 	end
 end
-
+local delfile = delfile or function(file) writefile(file, "") end
 
 local GuiLibrary = loadstring(LoadFileFromRepos("GuiLibrary.lua"))()
 
@@ -103,6 +104,23 @@ end)
 if not success2 or not result2 then
 	writefile(MainFileDirectory.."/SettingsSelecting/" .. game.PlaceId .. ".txt", "MainSetting")
 end
+local teleportConnection = Players.LocalPlayer.OnTeleport:Connect(function(State)
+    if (not teleportedServers) then
+		teleportedServers = true
+		local teleportScript = [[
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))
+		]]
+		
+		if shared.PassionFruitDev then 
+			teleportScript = "shared.PassionFruitDev = true \n"..teleportScript
+		end
+		local PlaceId = game.PlaceId
+		local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
+		writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
+		queueteleport(teleportScript)
+    end
+end)
+
 
 --// Set Shared Info
 shared.IClientToggledProperty = {}
