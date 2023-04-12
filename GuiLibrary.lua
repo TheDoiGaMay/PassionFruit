@@ -1245,6 +1245,13 @@ function UILibrary:new()
 			modCategory:Destroy()
 			CurrentUICreated[TabName] = nil
 		end
+
+		function ModMenu:RemoveMod(ModName)
+			theTab:Destroy()
+			modCategory:Destroy()
+			CurrentUICreated[TabName] = nil
+		end
+
 		CurrentUICreated[TabName] = ModMenu
 		print(CurrentUICreated[TabName])
 		return ModMenu
