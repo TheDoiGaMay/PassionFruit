@@ -532,6 +532,14 @@ function UILibrary:new()
 	mainGui.Position = UDim2.fromScale(0.5, 0.5)
 	mainGui.Size = UDim2.fromScale(0.5, 0.6)
 
+	game:GetService("UserInputService").InputBegan:Connect(function(current, pressed)
+        if not pressed then
+            if current.KeyCode.Name == "RightShift" then
+                mainGui.Visible = not mainGui.Visible
+            end
+        end
+    end)
+
 	local bar = Instance.new("Frame")
 	bar.Name = "Bar"
 	bar.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
@@ -1217,14 +1225,6 @@ function UILibrary:new()
 		end
 		return ModMenu
 	end
-
-    game:GetService("UserInputService").InputBegan:Connect(function(current, pressed)
-        if not pressed then
-            if current.KeyCode.Name == "RightShift" then
-                mainGui.Visible = not mainGui.Visible
-            end
-        end
-    end)
 
 	return TabTable
 end

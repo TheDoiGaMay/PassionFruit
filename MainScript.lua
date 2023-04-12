@@ -10,6 +10,7 @@ local Players = game:GetService("Players")
 --// Varibles
 local LocalPlayer = Players.LocalPlayer
 local MainFileDirectory = "IClientRework"
+local MainCodeDirectory = "IClientReworkCode"
 local MainFileWebsiteDirectory = "PassionFruit"
 
 repeat
@@ -29,11 +30,11 @@ end
 
 local function LoadFileFromRepos(scripturl)
 	if shared.IClientDev then
-		if not IsBetterFile(MainFileDirectory.. "/" .. scripturl) then
-			warn("File not found : "..MainFileDirectory.."/" .. scripturl)
+		if not IsBetterFile(MainCodeDirectory.. "/" .. scripturl) then
+			warn("File not found : "..MainCodeDirectory.."/" .. scripturl)
 			return
 		end
-		return readfile(MainFileDirectory .. "/" .. scripturl)
+		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory .."/master/" .. scripturl, true)
 		assert(res ~= "404: Not Found", "File not found")
@@ -71,10 +72,10 @@ if not (getasset and requestfunc and queueteleport) then
 end
 
 --// Check if already excuted
-if shared.AlreadyExecuted then
+if shared[MainFileWebsiteDirectory.. "AlreadyExecuted"] then
 	return
 else
-	shared.AlreadyExecuted = true
+	shared[MainFileWebsiteDirectory.. "AlreadyExecuted"] = true
 end
 
 --// Create Folder
