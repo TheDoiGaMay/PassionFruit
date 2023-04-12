@@ -106,7 +106,7 @@ end
 
 --// Set Shared Info
 shared.IClientToggledProperty = {}
-shared.MainGui = nil
+shared.PassionFruitMainGui = nil
 
 -------// Read Their Settings
 local PlaceId = game.PlaceId
@@ -128,7 +128,7 @@ end
 
 -------// Load UI
 local CreateNewWindow = GuiLibrary:new()
-shared.MainGui = CreateNewWindow
+shared.PassionFruitMainGui = CreateNewWindow
 
 
 -------// Load Universal Game Module

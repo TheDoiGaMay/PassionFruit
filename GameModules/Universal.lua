@@ -1,6 +1,6 @@
 
 
-local MainGui = shared.MainGui
+local MainGui = shared.PassionFruitMainGui
 
 local Combattab = MainGui:newtab("Combat")
 local BlantantTab = MainGui:newtab("Blantant")
