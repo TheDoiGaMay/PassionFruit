@@ -105,24 +105,6 @@ if not success2 or not result2 then
 	writefile(MainFileDirectory.."/SettingsSelecting/" .. game.PlaceId .. ".txt", "MainSetting")
 end
 
-LocalPlayer.OnTeleport:Connect(function(State)
-
-	local PlaceId = game.PlaceId
-	local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
-	print("Passion: Saving " .. GetSelectConfig .. "'s Config")
-	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
-
-	local teleportScript = [[
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))()
-	]]
-	
-	if shared.PassionFruitDev then 
-		teleportScript = "shared.PassionFruitDev = true; "..teleportScript
-	end
-	
-	queueteleport(teleportScript)
-end)
-
 
 --// Set Shared Info
 shared.IClientToggledProperty = {}
@@ -145,6 +127,24 @@ else
     writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
 end
 
+
+LocalPlayer.OnTeleport:Connect(function(State)
+
+	local PlaceId = game.PlaceId
+	local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
+	print("Passion: Saving " .. GetSelectConfig .. "'s Config")
+	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. "/.txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
+
+	local teleportScript = [[
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/randomdude11135/PassionFruit/master/MainScript.lua", true))()
+	]]
+	
+	if shared.PassionFruitDev then 
+		teleportScript = "shared.PassionFruitDev = true; "..teleportScript
+	end
+	
+	queueteleport(teleportScript)
+end)
 
 -------// Load UI
 local CreateNewWindow = GuiLibrary:new()
