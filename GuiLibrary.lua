@@ -4,6 +4,8 @@ local HttpService = game:GetService("HttpService")
 UILibrary.CurrentTabSelect = nil
 UILibrary.CurrentModSelect = nil
 
+local CurrentUICreated = {}
+
 local UIConfigFrame = {
 	["DropDown"] = function(Config,Parent)
 		local dropdown = Instance.new("Frame")
@@ -799,7 +801,7 @@ function UILibrary:new()
 			Enum.FontWeight.Bold,
 			Enum.FontStyle.Normal
 		)
-		textLabel.Text = "Passionfruit"
+		textLabel.Text = TabName or "Passionfruit"
 		textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		textLabel.TextScaled = true
 		textLabel.TextSize = 14
@@ -1223,10 +1225,26 @@ function UILibrary:new()
 
 			modCategory.CanvasSize = UDim2.new(0,0,0,uIGridLayout.AbsoluteContentSize.Y)
 		end
+
+		function ModMenu:RemoveTab()
+			theTab:Destroy()
+			CurrentUICreated[TabName] = nil
+		end
+		
+		CurrentUICreated[TabName] = ModMenu
+
 		return ModMenu
 	end
 
 	return TabTable
+end
+
+function UILibrary:FindTab(TabName:string)
+	return CurrentUICreated[TabName]
+end
+
+function UILibrary:FindMod(TabName:string, ModName:string)
+	return CurrentUICreated[TabName][ModName]
 end
 
 return UILibrary
