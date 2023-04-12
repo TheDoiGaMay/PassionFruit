@@ -519,6 +519,14 @@ local UIConfigFrame = {
 	end,
 }
 
+function UILibrary:FindTab(TabName:string)
+	return CurrentUICreated[TabName]
+end
+
+function UILibrary:FindMod(TabName:string, ModName:string)
+	return CurrentUICreated[TabName][ModName]
+end
+
 function UILibrary:new()
 	local TabTable = {}
 
@@ -1240,12 +1248,6 @@ function UILibrary:new()
 	return TabTable
 end
 
-function UILibrary:FindTab(TabName:string)
-	return CurrentUICreated[TabName]
-end
 
-function UILibrary:FindMod(TabName:string, ModName:string)
-	return CurrentUICreated[TabName][ModName]
-end
 
 return UILibrary
