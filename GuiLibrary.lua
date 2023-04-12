@@ -786,6 +786,14 @@ function UILibrary:new()
 	passionFruit.Parent = game.Players.LocalPlayer.PlayerGui
 
 	--// Function: TabBar
+	function TabTable:findTab(TabName:string)
+		return CurrentUICreated[TabName]
+	end
+	
+	function TabTable:findMod(TabName:string, ModName:string)
+		return CurrentUICreated[TabName][ModName]
+	end
+
 	function TabTable:newtab(TabName: string)
 		local ModMenu = {}
 		local theTab = Instance.new("Frame")
@@ -1235,13 +1243,6 @@ function UILibrary:new()
 		return ModMenu
 	end
 
-	function TabTable:findTab(TabName:string)
-		return CurrentUICreated[TabName]
-	end
-	
-	function TabTable:findMod(TabName:string, ModName:string)
-		return CurrentUICreated[TabName][ModName]
-	end
 
 	return TabTable
 end
