@@ -1230,11 +1230,12 @@ function UILibrary:new()
 			theTab:Destroy()
 			CurrentUICreated[TabName] = nil
 		end
-		
 		CurrentUICreated[TabName] = ModMenu
-
+		print(CurrentUICreated[TabName])
 		return ModMenu
 	end
+
+	
 
 	return TabTable
 end
