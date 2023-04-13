@@ -26,7 +26,6 @@ local function LoadFileFromRepos(scripturl)
 		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
-		assert(res ~= "404: Not Found", "File not found")
 		return res
 	end
 end
@@ -37,5 +36,6 @@ if publicrepo then
 	loadstring(publicrepo)()
 	break
 else
+	task.wait(1)
 end
 end
