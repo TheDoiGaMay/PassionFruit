@@ -361,12 +361,12 @@ do
                 local GetBlockClickerCPS = shared.IClientToggledProperty["Autoclicker"]["Block Clicker CPS"]
                 local GetDoAllowPlaceBlock = shared.IClientToggledProperty["Autoclicker"]["Place Block"]
 
+                local GetCurrentBedwarsEquippedKid = BedwarLibrary.ClientStoreHandler:getState().Bedwars.kit
                 if pressed then else return end
-                if #BedwarLibrary.AppController:getOpenApps() > 3 then return end
+                if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 4 or 3) then return end
                 if not isNotHoveringOverGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
                 if BedwarLibrary.KatanaController.chargingMaid == nil then else return end
-                
             
                 if getEquipped()["Type"] == "sword" then
                     
