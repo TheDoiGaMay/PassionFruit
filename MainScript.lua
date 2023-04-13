@@ -29,7 +29,6 @@ end
 
 
 local function LoadFileFromRepos(scripturl)
-	print( shared.PassionFruitDev)
 	if shared.PassionFruitDev then
 		if not IsBetterFile(MainCodeDirectory.. "/" .. scripturl) then
 			warn("File not found : "..MainCodeDirectory.."/" .. scripturl)
@@ -37,7 +36,6 @@ local function LoadFileFromRepos(scripturl)
 		end
 		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
-		print("Passion: Looking for github file")
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
 		assert(res ~= "404: Not Found", "File not found")
 		return res
@@ -154,6 +152,6 @@ shared.PassionFruitMainGui = CreateNewWindow
 loadstring(LoadFileFromRepos("GameModules/Universal.lua"))()
 
 -------// Load Load Specific Game Module
-loadstring(LoadFileFromRepos("GameModules/" .. game.PlaceId .. ".lua"))()
+loadstring(LoadFileFromRepos("GameModules/" .. game.PlaceId .. ".Lua"))()
 
 
