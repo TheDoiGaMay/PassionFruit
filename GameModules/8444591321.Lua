@@ -31,7 +31,7 @@ local function LoadFileFromRepos(scripturl)
 end
 
 for i = 1,5 do
-local publicrepo = LoadFileFromRepos("GameModules/6872274481.lua")
+local publicrepo = LoadFileFromRepos("GameModules/6872274481.Lua")
 if publicrepo then
 	loadstring(publicrepo)()
 	break
