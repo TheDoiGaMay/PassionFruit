@@ -13,6 +13,13 @@ local MainFileDirectory = "IClientRework"
 local MainCodeDirectory = "IClientReworkCode"
 local MainFileWebsiteDirectory = "PassionFruit"
 
+local PlaceSaveId = {
+	--// Bedwars
+	[8444591321] = 6872274481,
+	[8560631822] = 6872274481,
+}
+
+
 repeat
 	task.wait(1)
 until LocalPlayer.Character ~= nil
@@ -78,6 +85,11 @@ else
 	shared[MainFileWebsiteDirectory.. "AlreadyExecuted"] = true
 end
 
+local PlaceId = PlaceSaveId[game.PlaceId] or game.PlaceId
+if PlaceSaveId[game.PlaceId] then
+	print("using custom place id as data")
+end
+
 --// Create Folder
 if isfolder(MainFileDirectory) == false then
 	makefolder(MainFileDirectory)
@@ -87,8 +99,8 @@ if isfolder(MainFileDirectory.."/Settings") == false then
 	makefolder(MainFileDirectory.."/Settings")
 end
 
-if isfolder(MainFileDirectory.."/Settings/" .. game.PlaceId) == false then
-	makefolder(MainFileDirectory.."/Settings/" .. game.PlaceId)
+if isfolder(MainFileDirectory.."/Settings/" .. PlaceId) == false then
+	makefolder(MainFileDirectory.."/Settings/" .. PlaceId)
 end
 
 if isfolder(MainFileDirectory.."/SettingsSelecting") == false then
@@ -96,29 +108,21 @@ if isfolder(MainFileDirectory.."/SettingsSelecting") == false then
 end
 
 local success2, result2 = pcall(function()
-	return readfile(MainFileDirectory.."/SettingsSelecting/" .. game.PlaceId .. ".txt")
+	return readfile(MainFileDirectory.."/SettingsSelecting/" .. PlaceId .. ".txt")
 end)
 
 if not success2 or not result2 then
-	writefile(MainFileDirectory.."/SettingsSelecting/" .. game.PlaceId .. ".txt", "MainSetting")
+	writefile(MainFileDirectory.."/SettingsSelecting/" .. PlaceId .. ".txt", "MainSetting")
 end
 
 
-local PlaceSaveId = {
-	--// Bedwars
-	[8444591321] = 6872274481,
-	[8560631822] = 6872274481,
-}
 
 --// Set Shared Info
 shared.IClientToggledProperty = {}
 shared.PassionFruitMainGui = nil
 
 -------// Read Their Settings
-local PlaceId = PlaceSaveId[game.PlaceId] or game.PlaceId
-if PlaceSaveId[game.PlaceId] then
-	print("using custom place id as data")
-end
+
 local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
 
 local success2, result2 = pcall(function()
