@@ -362,7 +362,7 @@ do
                 local GetDoAllowPlaceBlock = shared.IClientToggledProperty["Autoclicker"]["Place Block"]
 
                 local GetCurrentState = BedwarLibrary.ClientStoreHandler:getState()
-                local GetCurrentBedwarsEquippedKid =GetCurrentState.Bedwars.kit
+                local GetCurrentBedwarsEquippedKid = GetCurrentState.Bedwars.kit
                 if GetCurrentState.Game.matchState == 0 then return end
                 if pressed then else return end
                 if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 4 or 3) then return end

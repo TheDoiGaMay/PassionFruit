@@ -104,16 +104,23 @@ if not success2 or not result2 then
 end
 
 
+local PlaceSaveId = {
+	--// Bedwars
+	["8444591321"] = 6872274481,
+	["8560631822"] = 6872274481,
+}
+
 --// Set Shared Info
 shared.IClientToggledProperty = {}
 shared.PassionFruitMainGui = nil
 
 -------// Read Their Settings
-local PlaceId = game.PlaceId
+local PlaceId = PlaceSaveId[game.PlaceId] or game.PlaceId
+
 local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
 
 local success2, result2 = pcall(function()
-	return game:GetService("HttpService"):JSONDecode(readfile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. ".txt"))
+	return game:GetService("HttpService"):JSONDecode(readfile(MainFileDirectory .. "/Settings/" .. PlaceId .. "/"..GetSelectConfig .. ".txt"))
 end)
 
 if success2 and result2 then
@@ -127,7 +134,6 @@ end
 
 LocalPlayer.OnTeleport:Connect(function(State)
 
-	local PlaceId = game.PlaceId
 	local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
 	print("Passion: Saving " .. GetSelectConfig .. "'s Config")
 	writefile(MainFileDirectory .. "/Settings/" .. game.PlaceId .. "/"..GetSelectConfig .. ".txt", game:GetService("HttpService"):JSONEncode(shared.IClientToggledProperty))
