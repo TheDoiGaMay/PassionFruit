@@ -106,8 +106,8 @@ end
 
 local PlaceSaveId = {
 	--// Bedwars
-	["8444591321"] = 6872274481,
-	["8560631822"] = 6872274481,
+	[8444591321] = 6872274481,
+	[8560631822] = 6872274481,
 }
 
 --// Set Shared Info
@@ -116,7 +116,9 @@ shared.PassionFruitMainGui = nil
 
 -------// Read Their Settings
 local PlaceId = PlaceSaveId[game.PlaceId] or game.PlaceId
-
+if PlaceSaveId[game.PlaceId] then
+	print("using custom place id as data")
+end
 local GetSelectConfig = readfile(MainFileDirectory.."/SettingsSelecting/" ..PlaceId .. ".txt")
 
 local success2, result2 = pcall(function()
