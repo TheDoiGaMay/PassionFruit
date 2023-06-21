@@ -280,7 +280,7 @@ BedwarLibrary = {
 	["ItemTable"] = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.item["item-meta"]).getItemMeta, 1),
 	["KatanaController"] = KnitClient.Controllers.DaoController,
 	["KatanaRemote"] = GetRemote(debug.getconstants(debug.getproto(KnitClient.Controllers.DaoController.onEnable, 4))),
-    KnockbackUtil = require(replicatedStorageService.TS.damage["knockback-util"]).KnockbackUtil,
+    KnockbackUtil = require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil,
 
 	["PickupRemote"] = GetRemote(
 		debug.getconstants(getmetatable(KnitClient.Controllers.ItemDropController).checkForPickup)
