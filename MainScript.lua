@@ -45,11 +45,11 @@ local function LoadFileFromRepos(scripturl,strike)
 		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
-		if not res then
-			task.wait(1)
+		if res == nil then
 			strike += 1
+			task.wait(1)
 			if strike >= 4 then
-				print("File not found")
+				warn("File not found")
 				return nil
 			else
 				return LoadFileFromRepos(scripturl,strike)
@@ -174,6 +174,9 @@ shared.PassionFruitMainGui = CreateNewWindow
 loadstring(LoadFileFromRepos("GameModules/Universal.lua"))()
 
 -------// Load Load Specific Game Module
+repeat
+	task.wait()
+until game.PlaceId
 loadstring(LoadFileFromRepos("GameModules/" .. game.PlaceId .. ".Lua"))()
 
 
