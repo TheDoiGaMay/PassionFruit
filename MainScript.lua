@@ -35,7 +35,7 @@ local function IsBetterFile(file)
 end
 
 
-local function LoadFileFromRepos(scripturl,strike)
+function LoadFileFromRepos(scripturl,strike)
 	local strike = strike or 1
 	if shared.PassionFruitDev then
 		if not IsBetterFile(MainCodeDirectory.. "/" .. scripturl) then
