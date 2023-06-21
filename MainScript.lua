@@ -180,6 +180,6 @@ loadstring(LoadFileFromRepos("GameModules/Universal.lua"))()
 repeat
 	task.wait()
 until game.PlaceId
-loadstring(LoadFileFromRepos("GameModules/" .. game.PlaceId .. ".Lua"))()
+loadstring(LoadFileFromRepos("GameModules/" .. game.PlaceId .. ".lua"))()
 
 
