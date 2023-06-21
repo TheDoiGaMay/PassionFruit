@@ -280,11 +280,8 @@ BedwarLibrary = {
 	["ItemTable"] = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.item["item-meta"]).getItemMeta, 1),
 	["KatanaController"] = KnitClient.Controllers.DaoController,
 	["KatanaRemote"] = GetRemote(debug.getconstants(debug.getproto(KnitClient.Controllers.DaoController.onEnable, 4))),
-	["KnockbackTable"] = debug.getupvalue(
-		require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity,
-		1
-	),
-	
+    KnockbackUtil = require(replicatedStorageService.TS.damage["knockback-util"]).KnockbackUtil,
+
 	["PickupRemote"] = GetRemote(
 		debug.getconstants(getmetatable(KnitClient.Controllers.ItemDropController).checkForPickup)
 	),
@@ -539,6 +536,56 @@ do
     )
 end
 
+----------// Velocity Handler
+do
+    
+    local KBFunction = nil
+
+    Combattab:newmod(
+        {ModName = "Velocity", ModDescription = "Hate current Knockback system when u just bought 1K USD PC for kb advantage?? Passionfruit make it better and cheaper!",Keybind= "None"},
+        function(args)
+            if args == true then
+                KBFunction = BedwarLibrary.KnockbackUtil.applyKnockback
+				BedwarLibrary.KnockbackUtil.applyKnockback = function(root, mass, dir, knockback, ...)
+					knockback = knockback or {}
+
+                    local GetHorValue = shared.IClientToggledProperty["Velocity"]["Horizontal"]
+                    local GetVertValue = shared.IClientToggledProperty["Velocity"]["Vertical"]
+
+					if GetHorValue == 0 and GetVertValue == 0 then return end
+					knockback.horizontal = (knockback.horizontal or 1) * (GetHorValue / 100)
+					knockback.vertical = (knockback.vertical or 1) * (GetVertValue / 100)
+					return KBFunction(root, mass, dir, knockback, ...)
+				end
+			else
+				if KBFunction then
+                    BedwarLibrary.KnockbackUtil.applyKnockback = KBFunction
+                end
+            end
+        end,
+        {
+            [1] = {
+                DisplayText = "Horizontal",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 100,
+                Min = 0,
+                Max = 100,
+            },
+            [2] = {
+                DisplayText = "Vertical",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 100,
+                Min = 0,
+                Max = 100,
+            },
+        }
+    )
+
+end
 
 
 --------------------------------------// Utility Tab
