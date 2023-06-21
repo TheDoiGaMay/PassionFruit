@@ -47,9 +47,10 @@ function LoadFileFromRepos(scripturl,strike)
 		local suc, res = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true) end)
 		if not suc or res == "404: Not Found" then
 			strike += 1
+			warn("File not found, Strike: " .. strike)
+
 			task.wait(1)
 			if strike >= 4 then
-				warn("File not found")
 				return nil
 			else
 				local Yes = LoadFileFromRepos(scripturl,strike)
