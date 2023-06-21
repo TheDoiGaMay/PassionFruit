@@ -305,9 +305,6 @@ BedwarLibrary = {
 		require(game:GetService("ReplicatedStorage").TS.games.bedwars.shop["bedwars-shop"]).BedwarsShop.getShopItem,
 		2
 	),
-	["ShopRight"] = require(
-		LocalPlayer.PlayerScripts.TS.controllers.games.bedwars.shop.ui["item-shop"]["shop-left"]["shop-left"]
-	).BedwarsItemShopLeft,
 	["SoundManager"] = require(
 		game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out
 	).SoundManager,
