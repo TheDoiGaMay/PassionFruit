@@ -538,10 +538,10 @@ function UILibrary:new()
 	mainGui.BackgroundTransparency = 1
 	mainGui.Position = UDim2.fromScale(0.5, 0.5)
 	mainGui.Size = UDim2.fromScale(0.5, 0.6)
-	mainGui.Visible = true
+	mainGui.Visible = false
 	game:GetService("UserInputService").InputBegan:Connect(function(current, pressed)
         if not pressed then
-            if current.KeyCode.Name == "RightShift" then
+            if current.KeyCode.Name == "RightBracket" then
                 mainGui.Visible = not mainGui.Visible
             end
         end
