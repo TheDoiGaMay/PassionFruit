@@ -45,6 +45,7 @@ function LoadFileFromRepos(scripturl,strike)
 		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
+		print(res)
 		if res == nil then
 			strike += 1
 			task.wait(1)
@@ -52,10 +53,12 @@ function LoadFileFromRepos(scripturl,strike)
 				warn("File not found")
 				return nil
 			else
-				return LoadFileFromRepos(scripturl,strike)
+				local Yes = LoadFileFromRepos(scripturl,strike)
+				return Yes
 			end
+		else
+			return res
 		end
-		return res
 	end
 end
 
