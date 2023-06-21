@@ -46,6 +46,7 @@ local function LoadFileFromRepos(scripturl,strike)
 	else
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
 		if not res then
+			task.wait(1)
 			strike += 1
 			if strike >= 4 then
 				print("File not found")
