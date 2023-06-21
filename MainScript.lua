@@ -35,7 +35,8 @@ local function IsBetterFile(file)
 end
 
 
-local function LoadFileFromRepos(scripturl)
+local function LoadFileFromRepos(scripturl,strike)
+	local strike = strike or 1
 	if shared.PassionFruitDev then
 		if not IsBetterFile(MainCodeDirectory.. "/" .. scripturl) then
 			warn("File not found : "..MainCodeDirectory.."/" .. scripturl)
@@ -44,7 +45,15 @@ local function LoadFileFromRepos(scripturl)
 		return readfile(MainCodeDirectory .. "/" .. scripturl)
 	else
 		local res = game:HttpGet("https://raw.githubusercontent.com/randomdude11135/".. MainFileWebsiteDirectory.. "/master/".. scripturl, true)
-		assert(res ~= "404: Not Found", "File not found")
+		if not res then
+			strike += 1
+			if strike >= 4 then
+				print("File not found")
+				return nil
+			else
+				return LoadFileFromRepos(scripturl,strike)
+			end
+		end
 		return res
 	end
 end
