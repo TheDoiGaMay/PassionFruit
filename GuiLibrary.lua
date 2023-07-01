@@ -531,6 +531,8 @@ function UILibrary:new()
 	passionFruit.Name = "PassionFruit"
 	passionFruit.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	passionFruit.ResetOnSpawn = false
+
+	TabTable.MainGui = passionFruit
 	local mainGui = Instance.new("Frame")
 	mainGui.Name = "MainGui"
 	mainGui.AnchorPoint = Vector2.new(0.5, 0.5)

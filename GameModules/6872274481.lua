@@ -1,12 +1,10 @@
 
-local HttpService = game:GetService("HttpService")
-local LocalizationService = game:GetService("LocalizationService")
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-
 
 --// UI TAB
 local MainGui = shared.PassionFruitMainGui
@@ -257,13 +255,6 @@ BedwarLibrary = {
 	["GameAnimationUtil"] = require(game:GetService("ReplicatedStorage").TS.animation["animation-util"]).GameAnimationUtil,
 	["GamePlayerUtil"] = require(game:GetService("ReplicatedStorage").TS.player["player-util"]).GamePlayerUtil,
 	["getEntityTable"] = require(game:GetService("ReplicatedStorage").TS.entity["entity-util"]).EntityUtil,
-	["getIcon"] = function(item, showinv)
-		local itemmeta = BedwarLibrary["getItemMetadata"](item.itemType)
-		if itemmeta and showinv then
-			return itemmeta.image
-		end
-		return ""
-	end,
 	["getInventory"] = function(plr)
 		local plr = plr or LocalPlayer
 		local suc, result = pcall(function()
@@ -318,6 +309,13 @@ BedwarLibrary = {
 	["ItemMeta"] = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.item["item-meta"]).getItemMeta, 1),
 	EntityUtil = require(game:GetService("ReplicatedStorage").TS.entity["entity-util"]).EntityUtil,
 
+    getIcon = function(item, showinv)
+        local itemmeta = BedwarLibrary.ItemTable[item.itemType]
+        if itemmeta and showinv then
+            return itemmeta.image or ""
+        end
+        return ""
+    end,
 }
 
 for i, v in pairs(debug.getupvalues(getmetatable(KnitClient.Controllers.SwordController)["attackEntity"])) do
@@ -815,6 +813,107 @@ do
 
 end
 
+
+
+----------// Kit ESP Handler
+do
+
+    local espobjs = {}
+    local ESPConnection = {}
+	local espfold = Instance.new("Folder")
+
+    espfold.Parent = game.CoreGui
+
+    function RenderItem(ItemPrimaryPart, icon)
+        local billboard = Instance.new("BillboardGui")
+		billboard.Parent = espfold
+		billboard.Name = "iron"
+		billboard.StudsOffsetWorldSpace = Vector3.new(0, 3, 1.5)
+		billboard.Size = UDim2.new(0, 32, 0, 32)
+		billboard.AlwaysOnTop = true
+		billboard.Adornee = ItemPrimaryPart
+		local image = Instance.new("ImageLabel")
+		image.BackgroundTransparency = 0.5
+		image.BorderSizePixel = 0
+		image.Image = BedwarLibrary.getIcon({itemType = icon}, true)
+		image.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+		image.Size = UDim2.new(0, 32, 0, 32)
+		image.AnchorPoint = Vector2.new(0.5, 0.5)
+		image.Parent = billboard
+		local uicorner = Instance.new("UICorner")
+		uicorner.CornerRadius = UDim.new(0, 4)
+		uicorner.Parent = image
+		espobjs[ItemPrimaryPart] = billboard
+    end
+
+    local IconIndex = {
+        metal_detector = "iron",
+        beekeeper = "bee",
+        bigman = "natures_essence_1"
+    }
+
+    local KitItemTag = {
+        metal_detector = "hidden-metal",
+        beekeeper = "bee",
+        bigman = "treeOrb",
+    }
+
+    UtilityTab:newmod(
+        {ModName = "Kit ESP", ModDescription = "Show where all the item are! so u dont have to walk around the map 24/7",Keybind= "None"},
+        function(args)
+            if args == true then
+
+                local GetCurrentState = BedwarLibrary.ClientStoreHandler:getState()
+                local GetCurrentBedwarsEquippedKid = GetCurrentState.Bedwars.kit
+
+                if IconIndex[GetCurrentBedwarsEquippedKid] and KitItemTag[GetCurrentBedwarsEquippedKid] then
+                   
+                    ESPConnection.InstanceAdded = CollectionService:GetInstanceAddedSignal(KitItemTag[GetCurrentBedwarsEquippedKid]):Connect(function(newObject)
+                        RenderItem(newObject.PrimaryPart, IconIndex[GetCurrentBedwarsEquippedKid])
+                    end)
+                    
+                    ESPConnection.InstanceRemoved = CollectionService:GetInstanceRemovedSignal(KitItemTag[GetCurrentBedwarsEquippedKid]):Connect(function(v)
+                        if espobjs[v.PrimaryPart] then
+                            espobjs[v.PrimaryPart]:Destroy()
+                            espobjs[v.PrimaryPart] = nil
+                        end
+                    end)
+
+                    for i,v in pairs(CollectionService:GetTagged(KitItemTag[GetCurrentBedwarsEquippedKid])) do 
+                        RenderItem(v.PrimaryPart, IconIndex[GetCurrentBedwarsEquippedKid])
+                    end
+
+                end
+                
+			else
+				
+                if ESPConnection.InstanceAdded then
+                    ESPConnection.InstanceAdded:Disconnect()
+                    ESPConnection.InstanceAdded = nil
+                end
+
+                if ESPConnection.InstanceRemoved then
+                    ESPConnection.InstanceRemoved:Disconnect()
+                    ESPConnection.InstanceRemoved = nil
+                end
+
+                espfold:ClearAllChildren()
+                table.clear(espobjs)
+
+            end
+        end,
+        {
+            [1] = {
+                DisplayText = "You though there configuration for it? lol",
+                ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
+            }
+        }
+    )
+end
 
 
 --------------------------------------// Cosmetics Tab
