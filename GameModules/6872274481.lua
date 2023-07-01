@@ -358,7 +358,7 @@ do
                 if GetCurrentState.Game.matchState == 0 then return end
                 if pressed then else return end
                 --print(GetCurrentBedwarsEquippedKid,#BedwarLibrary.AppController:getOpenApps())
-                if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 21 or 20) then return end
+                --if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 21 or 20) then return end
                 if not isNotHoveringOverGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
                 if BedwarLibrary.KatanaController.chargingMaid == nil then else return end
