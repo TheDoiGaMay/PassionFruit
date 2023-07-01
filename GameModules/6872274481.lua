@@ -822,6 +822,11 @@ do
     local ESPConnection = {}
 	local espfold = Instance.new("Folder")
 
+    local StarsIconIndex = {
+        CritStar = "crit_star",
+        VitalityStar = "vitality_star",
+    }
+
     espfold.Parent = game.CoreGui
 
     function RenderItem(ItemPrimaryPart, icon)
@@ -835,7 +840,7 @@ do
 		local image = Instance.new("ImageLabel")
 		image.BackgroundTransparency = 0.5
 		image.BorderSizePixel = 0
-		image.Image = BedwarLibrary.getIcon({itemType = icon}, true)
+		image.Image = BedwarLibrary.getIcon({itemType = (icon == "crit_star" and StarsIconIndex[ItemPrimaryPart.Parent.Name] or icon)}, true)
 		image.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 		image.Size = UDim2.new(0, 32, 0, 32)
 		image.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -844,18 +849,22 @@ do
 		uicorner.CornerRadius = UDim.new(0, 4)
 		uicorner.Parent = image
 		espobjs[ItemPrimaryPart] = billboard
+
+
     end
 
     local IconIndex = {
         metal_detector = "iron",
         beekeeper = "bee",
-        bigman = "natures_essence_1"
+        bigman = "natures_essence_1",
+        star_collector = "crit_star"
     }
 
     local KitItemTag = {
         metal_detector = "hidden-metal",
         beekeeper = "bee",
         bigman = "treeOrb",
+        star_collector = "stars"
     }
 
     UtilityTab:newmod(
