@@ -357,7 +357,8 @@ do
                 local GetCurrentBedwarsEquippedKid = GetCurrentState.Bedwars.kit
                 if GetCurrentState.Game.matchState == 0 then return end
                 if pressed then else return end
-                if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 9 or 8) then return end
+                --print(GetCurrentBedwarsEquippedKid,#BedwarLibrary.AppController:getOpenApps())
+                if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 21 or 20) then return end
                 if not isNotHoveringOverGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
                 if BedwarLibrary.KatanaController.chargingMaid == nil then else return end
@@ -833,7 +834,7 @@ do
         local billboard = Instance.new("BillboardGui")
 		billboard.Parent = espfold
 		billboard.Name = "iron"
-		billboard.StudsOffsetWorldSpace = Vector3.new(0, 3, 1.5)
+		billboard.StudsOffsetWorldSpace = Vector3.new(0, 1, 0)
 		billboard.Size = UDim2.new(0, 32, 0, 32)
 		billboard.AlwaysOnTop = true
 		billboard.Adornee = ItemPrimaryPart
