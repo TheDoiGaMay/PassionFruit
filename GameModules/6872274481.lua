@@ -310,7 +310,7 @@ BedwarLibrary = {
 	SprintController = KnitClient.Controllers.SprintController,
 	["SwingSword"] = getmetatable(KnitClient.Controllers.SwordController).swingSwordAtMouse,
 	["SwingSwordRegion"] = getmetatable(KnitClient.Controllers.SwordController).swingSwordInRegion,
-	["SwordController"] = KnitClient.Controllers.SwordController,
+    SwordController = KnitClient.Controllers.SwordController,
 	["VictoryScreen"] = require(LocalPlayer.PlayerScripts.TS.controllers["game"].match.ui["victory-section"]).VictorySection,
 	["ViewmodelController"] = KnitClient.Controllers.ViewmodelController,
 	["WeldTable"] = require(game:GetService("ReplicatedStorage").TS.util["weld-util"]).WeldUtil,
@@ -359,11 +359,11 @@ do
                 local GetCurrentBedwarsEquippedKid = GetCurrentState.Bedwars.kit
                 if GetCurrentState.Game.matchState == 0 then return end
                 if pressed then else return end
-                if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 4 or 3) then return end
+                if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 9 or 8) then return end
                 if not isNotHoveringOverGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
                 if BedwarLibrary.KatanaController.chargingMaid == nil then else return end
-            
+                
                 if getEquipped()["Type"] == "sword" then
                     
                     NextClickTimer = workspace:GetServerTimeNow() + (1/GetAutoClickerCPS)
