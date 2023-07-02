@@ -933,7 +933,7 @@ do
     local TNTRadiusRender = nil
     local VisualTable = {}
     UtilityTab:newmod(
-        {ModName = "Explosion", ModDescription = "Tired of being suggest by pogama? just ghost him!",Keybind= "None"},
+        {ModName = "Explosion", ModDescription = "TNT / Fireball Related",Keybind= "None"},
         function(args)
             if args == true then
 
