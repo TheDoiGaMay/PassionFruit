@@ -1039,7 +1039,6 @@ do
 
     local Combo = 1
 	local TheWorkspacetime = workspace:GetServerTimeNow()
-    local HitConnection
     CosmeticTab:newmod(
         {ModName = "Better Combat Sound", ModDescription = "You will feel so satisfied when fighting while turning this on",Keybind= "None"},
         function(args)
