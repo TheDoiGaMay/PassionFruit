@@ -354,17 +354,14 @@ do
                 local GetDoAllowPlaceBlock = shared.IClientToggledProperty["Autoclicker"]["Place Block"]
 
                 local GetCurrentState = BedwarLibrary.ClientStoreHandler:getState()
-                local GetCurrentBedwarsEquippedKid = GetCurrentState.Bedwars.kit
                 if GetCurrentState.Game.matchState == 0 then return end
                 if pressed then else return end
-                --print(GetCurrentBedwarsEquippedKid,#BedwarLibrary.AppController:getOpenApps())
-                --if #BedwarLibrary.AppController:getOpenApps() > (GetCurrentBedwarsEquippedKid == "hannah" and 21 or 20) then return end
+                
                 if not isNotHoveringOverGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
                 if BedwarLibrary.KatanaController.chargingMaid == nil then else return end
                 
-                if getEquipped()["Type"] == "sword" then
-                    
+                if getEquipped()["Type"] == "sword" then 
                     NextClickTimer = workspace:GetServerTimeNow() + (1/GetAutoClickerCPS)
                     BedwarLibrary.SwordController:swingSwordAtMouse()
                 elseif getEquipped()["Type"] == "block" and GetDoAllowPlaceBlock then
@@ -925,6 +922,116 @@ do
     )
 end
 
+
+
+----------// No Explosion particle Handler
+do
+    
+    local NoParticleConnection = nil
+    local ShowTNTRadiusConnection = nil
+    local ShowTNTDestroyedConnection = nil
+    local TNTRadiusRender = nil
+    local VisualTable = {}
+    UtilityTab:newmod(
+        {ModName = "Explosion", ModDescription = "Tired of being suggest by pogama? just ghost him!",Keybind= "None"},
+        function(args)
+            if args == true then
+
+                NoParticleConnection = workspace.Explosions.ChildAdded:Connect(function(object)
+                    if not shared.IClientToggledProperty["Explosion"]["No Explosion Particle"] then return end
+                    task.wait()
+                    object:FindFirstChildOfClass("ParticleEmitter"):Clear()
+                end)
+               
+                ShowTNTRadiusConnection = CollectionService:GetInstanceAddedSignal("tnt"):Connect(function(obj)
+                    if not shared.IClientToggledProperty["Explosion"]["Show Explosion Radius (Not Accurate)"] then return end
+                    local killaurarangecirclepart = Instance.new("MeshPart")
+				    killaurarangecirclepart.MeshId = "rbxassetid://3726303797"
+				    killaurarangecirclepart.Color = Color3.fromRGB(255,255,255)
+				    killaurarangecirclepart.CanCollide = false
+				    killaurarangecirclepart.Anchored = true
+				    killaurarangecirclepart.Material = Enum.Material.Neon
+				    killaurarangecirclepart.Size = Vector3.new(24 * 0.75, 0.01, 24 * 0.75)
+                    killaurarangecirclepart.Transparency = shared.IClientToggledProperty["Explosion"]["Radius Transparency"] / 100
+				    killaurarangecirclepart.Parent = workspace.CurrentCamera
+                    killaurarangecirclepart.Position = obj.Position
+				    BedwarLibrary.QueryUtil:setQueryIgnored(killaurarangecirclepart, true)
+                    VisualTable[obj] = killaurarangecirclepart
+                end)
+
+                ShowTNTDestroyedConnection = CollectionService:GetInstanceRemovedSignal("tnt"):Connect(function(obj)
+                    if VisualTable[obj] then
+                        VisualTable[obj]:Destroy()
+                    end
+                end)
+
+                TNTRadiusRender = RunService.Heartbeat:Connect(function()
+                    for index, value in VisualTable do
+                        value.Position = index.Position
+                    end
+                end)
+
+			else
+				
+                if NoParticleConnection then
+                    NoParticleConnection:Disconnect()
+                    NoParticleConnection = nil
+                end
+              
+                if ShowTNTRadiusConnection then
+                    ShowTNTRadiusConnection:Disconnect()
+                    ShowTNTRadiusConnection = nil
+                end
+
+                if ShowTNTDestroyedConnection then
+                    ShowTNTDestroyedConnection:Disconnect()
+                    ShowTNTDestroyedConnection = nil
+                end
+
+                if TNTRadiusRender then
+                    TNTRadiusRender:Disconnect()
+                    TNTRadiusRender = nil
+                end
+
+            end
+        end,
+        {
+            [1] = {
+                DisplayText = "Show Explosion Radius (Not Accurate)",
+                ConfigType = "Toggle",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+            [2] = {
+                DisplayText = "No Explosion Particle",
+                ConfigType = "Toggle",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+            [3] = {
+                DisplayText = "For No Explosion Radius",
+                ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+            [4] = {
+                DisplayText = "Radius Transparency",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 20,
+                Min = 0,
+                Max = 100,
+            }
+        }
+    )
+end
 
 --------------------------------------// Cosmetics Tab
 ----------// Nyx Sound Handler
