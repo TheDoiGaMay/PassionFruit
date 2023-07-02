@@ -940,7 +940,7 @@ do
                 NoParticleConnection = workspace.Explosions.ChildAdded:Connect(function(object)
                     if not shared.IClientToggledProperty["Explosion"]["No Explosion Particle"] then return end
                     task.wait()
-                    object:FindFirstChildOfClass("ParticleEmitter"):Clear()
+                    object:ClearAllChildren()
                 end)
                
                 ShowTNTRadiusConnection = CollectionService:GetInstanceAddedSignal("tnt"):Connect(function(obj)
