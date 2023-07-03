@@ -10,7 +10,7 @@ local BlantantTab = MainGui:newtab("Blantant")
 local UtilityTab = MainGui:newtab("Utility")
 local CosmeticTab = MainGui:newtab("Cosmetic")
 local GetCombatTab = MainGui:findTab("Combat")
-
+local WorldTab = MainGui:newtab("World")
 
 --// Autoclicker Handler
 do

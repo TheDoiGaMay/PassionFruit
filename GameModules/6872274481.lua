@@ -12,6 +12,7 @@ local Combattab = MainGui:findTab("Combat")
 local BlantantTab = MainGui:findTab("Blantant")
 local UtilityTab = MainGui:findTab("Utility")
 local CosmeticTab = MainGui:findTab("Cosmetic")
+local ReplayModTab = MainGui:newtab("ReplayMod")
 
 
 --// Remove Older Mod
@@ -532,6 +533,8 @@ do
     )
 end
 
+
+
 ----------// Velocity Handler
 do
     
@@ -582,6 +585,7 @@ do
     )
 
 end
+
 
 
 --------------------------------------// Utility Tab
@@ -1033,6 +1037,8 @@ do
     )
 end
 
+
+
 --------------------------------------// Cosmetics Tab
 ----------// Nyx Sound Handler
 do
@@ -1478,4 +1484,29 @@ do
         }
     )
 
+end
+
+
+--------------------------------------// Replay Tab (Experimental)
+do
+
+    ReplayModTab:newmod(
+        {ModName = "Play Replay", ModDescription = "Experimental Stage (will get back to it later) (Bind Only)",Keybind= "None"},
+        function(args)
+            
+          if args == false then return end
+          if shared.IClientToggledProperty["Play Replay"]["Select Save File"] == "None" then return end
+
+        end,
+        {
+            [1] = {
+                DisplayText = "Select Save File",
+                ConfigType = "DropDown",
+                List =  {},
+                Value = "None",
+                Callback = function(Value)  
+                end
+            }
+        }
+    )
 end
