@@ -74,35 +74,6 @@ local function GetRemote(t)
 	end
 end
 
-local function GetPlayerNearBy(max)
-	if not isAlive() then
-		return {}
-	end
-	local t = {}
-	for i, v in next, Players:GetPlayers() do
-		if isAlive(v) and v ~= LocalPlayer then
-
-			local Position1 = LocalPlayer.Character.HumanoidRootPart.Position
-			local Position2 = Vector3.new(v.Character.HumanoidRootPart.Position.X,Position1.Y,v.Character.HumanoidRootPart.Position.Z)
-
-			if
-				v.Character.HumanoidRootPart
-				and (Position1 - Position2).Magnitude
-					<= max
-			then
-				table.insert(t, v)
-			end
-		end
-	end
-	return t
-end
-
-local function hashvector(vec)
-	return {
-		value = vec,
-	}
-end
-
 local function getEquipped()
 	local typetext = ""
 	local obj = BedwarLibrary["getInventory"](LocalPlayer).hand
@@ -120,10 +91,19 @@ local function getEquipped()
 	return { ["Object"] = obj and obj.tool, ["Type"] = typetext }
 end
 
+local function getItem(itemName)
+	for slot, item in pairs(BedwarLibrary["ClientStoreHandler"]:getState().Inventory.observedInventory.inventory.items) do
+		if item.itemType == itemName then
+			return item, slot
+		end
+	end
+	return nil
+end
+
 local function getHotbarSlot(itemName)
-	for i5, v5 in pairs(BedwarLibrary["ClientStoreHandler"]:getState().Inventory.observedInventory.hotbar) do
-		if v5["item"] and v5["item"].itemType == itemName then
-			return i5 - 1
+	for index, itemvalue in pairs(BedwarLibrary["ClientStoreHandler"]:getState().Inventory.observedInventory.hotbar) do
+		if itemvalue["item"] and itemvalue["item"].itemType == itemName then
+			return index - 1
 		end
 	end
 	return nil
@@ -157,6 +137,10 @@ local function getBestTool(block)
 		if meta["breakBlock"] and meta["breakBlock"][blockType] then
 			tool = v
 			break
+        else
+            if tool == nil and meta["breakBlock"] then
+                tool = v
+            end
 		end
 	end
 	return tool
@@ -178,8 +162,6 @@ local function switchToAndUseTool(block, legit)
 					type = "InventorySelectHotbarSlot",
 					slot = getHotbarSlot(tool.itemType),
 				})
-				task.wait(0.1)
-				updateitem:Fire(inputobj)
 				return true
 			else
 				return false
@@ -190,6 +172,76 @@ local function switchToAndUseTool(block, legit)
 	end
 end
 
+local function getPlacedBlock(pos)
+	local roundedPosition = BedwarLibrary.BlockController:getBlockPosition(pos)
+	return BedwarLibrary.BlockController:getStore():getBlockAt(roundedPosition), roundedPosition
+end
+
+local healthbarblocktable = {
+    blockHealth = -1,
+    breakingBlockPosition = Vector3.zero
+}
+
+function BreakBlock(Position)
+    if LocalPlayer:GetAttribute("DenyBlockBreak") then
+        return
+    end
+
+    local block, blockpos = getPlacedBlock(Position)
+
+    if BedwarLibrary.BlockEngineClientEvents.DamageBlock:fire(block.Name, blockpos, block):isCancelled() then
+        return
+    end
+
+    local blockhealthbarpos = {blockPosition = Vector3.zero}
+	local blockdmg = 0
+	if block and block.Parent ~= nil then
+		if ((LocalPlayer.Character.HumanoidRootPart.Position) - (blockpos * 3)).magnitude > 30 then return end
+			switchToAndUseTool(block)
+			blockhealthbarpos = {
+				blockPosition = blockpos
+			}
+			task.spawn(function()
+			BedwarLibrary.ClientHandlerDamageBlock:Get("DamageBlock"):CallServerAsync({
+				blockRef = blockhealthbarpos, 
+				hitPosition = blockpos * 3, 
+				hitNormal = Vector3.FromNormalId(Enum.NormalId.Top)
+			}):andThen(function(result)
+				if result ~= "failed" then
+					failedBreak = 0
+					if healthbarblocktable.blockHealth == -1 or blockhealthbarpos.blockPosition ~= healthbarblocktable.breakingBlockPosition then
+						local blockdata = BedwarLibrary.BlockController:getStore():getBlockData(blockhealthbarpos.blockPosition)
+						local blockhealth = blockdata and blockdata:GetAttribute(LocalPlayer.Name .. "_Health") or block:GetAttribute("Health")
+						healthbarblocktable.blockHealth = blockhealth
+						healthbarblocktable.breakingBlockPosition = blockhealthbarpos.blockPosition
+					end
+						healthbarblocktable.blockHealth = result == "destroyed" and 0 or healthbarblocktable.blockHealth
+						blockdmg = BedwarLibrary.BlockController:calculateBlockDamage(LocalPlayer, blockhealthbarpos)
+						healthbarblocktable.blockHealth = math.max(healthbarblocktable.blockHealth - blockdmg, 0)
+							BedwarLibrary.BlockBreaker:updateHealthbar(blockhealthbarpos, healthbarblocktable.blockHealth, block:GetAttribute("MaxHealth"), blockdmg, block)
+								if healthbarblocktable.blockHealth <= 0 then
+									BedwarLibrary.BlockBreaker.breakEffect:playBreak(block.Name, blockhealthbarpos.blockPosition, LocalPlayer)
+									BedwarLibrary.BlockBreaker.healthbarMaid:DoCleaning()
+									healthbarblocktable.breakingBlockPosition = Vector3.zero
+								else
+									BedwarLibrary.BlockBreaker.breakEffect:playHit(block.Name, blockhealthbarpos.blockPosition, LocalPlayer)
+								end
+							end
+							local animation
+							animation = BedwarLibrary.AnimationUtil:playAnimation(LocalPlayer, BedwarLibrary.BlockController:getAnimationController():getAssetId(1))
+							BedwarLibrary.ViewmodelController:playAnimation(15)
+							task.wait(0.3)
+							if animation ~= nil then
+								animation:Stop()
+								animation:Destroy()
+							end
+						
+							failedBreak = failedBreak + 1
+						
+					end)
+				end)
+			end
+end
 
 --// Framework
 local KnitGotten, KnitClient
@@ -204,7 +256,6 @@ repeat task.wait() until debug.getupvalue(KnitClient.Start, 1)
 local Flamework = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@flamework"].core.out).Flamework
 local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
-local oldRemoteGet = getmetatable(Client).Get
 
 BedwarLibrary = {
 	KillEffectMeta = require(game.ReplicatedStorage.TS.locker["kill-effect"]["kill-effect-meta"]).KillEffectMeta,
@@ -216,12 +267,16 @@ BedwarLibrary = {
 	["AppController"] = require(
 		game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.controllers["app-controller"]
 	).AppController,
-	["BlockController"] = require(
-		game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out
-	).BlockEngine,
-	["BlockEngine"] = require(LocalPlayer.PlayerScripts.TS.lib["block-engine"]["client-block-engine"]).ClientBlockEngine,
-	["BlockPlacementController"] = KnitClient.Controllers.BlockPlacementController,
-	["BlockBreaker"] = KnitClient.Controllers.BlockBreakController.blockBreaker,
+
+    --// Blocks
+    BlockBreaker = KnitClient.Controllers.BlockBreakController.blockBreaker,
+	BlockController = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out).BlockEngine,
+	BlockCpsController = KnitClient.Controllers.BlockCpsController,
+    BlockEngine = require(LocalPlayer.PlayerScripts.TS.lib["block-engine"]["client-block-engine"]).ClientBlockEngine,
+    BlockEngineClientEvents = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out.client["block-engine-client-events"]).BlockEngineClientEvents,
+    BlockPlacementController = KnitClient.Controllers.BlockPlacementController,
+    BlockPlacer = require(ReplicatedStorage["rbxts_include"]["node_modules"]["@easy-games"]["block-engine"].out.client.placement["block-placer"]).BlockPlacer,
+	
 	["ChestController"] = KnitClient.Controllers.ChestController,
 	["ClickHold"] = require(
 		game:GetService("ReplicatedStorage")["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.ui.lib.util["click-hold"]
@@ -614,6 +669,7 @@ do
 					return olddisable2(Self)
 				end
 				BedwarLibrary["BlockBreaker"]["hitBlock"] = function(...)
+                    print(...)
 					if isAlive() and blockplaceenabled2 then
 						local mouseinfo = blockplacetable2.clientManager:getBlockSelector():getMouseInfo(0)
 						if mouseinfo and mouseinfo.target then
@@ -1041,16 +1097,50 @@ end
 
 ----------// Auto Ginger
 do
+
+    PlaceBlockEngine = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "gumdrop_bounce_pad")
+
+
+    function PlaceGinger(Position)
+        if getItem("gumdrop_bounce_pad") then
+            switchItem(getItem("gumdrop_bounce_pad").tool,true)
+			return PlaceBlockEngine:placeBlock(Vector3.new(Position.X / 3, Position.Y / 3, Position.Z / 3))
+		end
+    end
+
+    function RoudUpPosition(Position)
+        return Vector3.new(math.floor((Position.X / 3) + 0.5) * 3, math.floor((Position.Y / 3) + 0.5) * 3, math.floor((Position.Z / 3) + 0.5) * 3) 
+    end
+
     UtilityTab:newmod(
-        {ModName = "GingerbreadManManMan", ModDescription = "Tired of quick hotkeying + tryharding with ginger? just use this ez peezee",Keybind= "None"},
+        {ModName = "GingerbreadManManMan", ModDescription = "Tired of quick hotkeying + tryharding with ginger? just use this ez peezee",Keybind= "None",BindOnly = true},
         function(args)
-            
+            if args == true then else return end
+            if not isAlive() then return end
+            local CurrentPlayerPosition = isAlive() and LocalPlayer.Character.HumanoidRootPart.Position
+            local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
+            local CurrentHumanoid = LocalPlayer.Character.Humanoid
+
+            local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
+            PlaceGinger(pos)
+
+            task.delay(0.1, function()
+                local block, pos2 = getPlacedBlock(pos)
+                switchToAndUseTool(block,true)
+                BreakBlock(pos)
+                --BedwarLibrary.BlockEngineClientEvents.DamageBlock:fire(block.Name, pos, block) 
+            end)
+
 
         end,
         {
             [1] = {
                 DisplayText = "It will just quick hotkey for you so dw",
                 ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
             }
         }
     )

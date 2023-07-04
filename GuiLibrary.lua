@@ -1066,7 +1066,7 @@ function UILibrary:new()
 
 			local IsToggled = IClientYesTarget.Toggled
 			local issettingkeybind = false
-			local function ModToggleChanged(NewToggle)
+			local function ModToggleChanged(NewToggle,DoNotCallback)
 				if NewToggle == true then
 					TweenService:Create(
 						icon,
@@ -1128,8 +1128,19 @@ function UILibrary:new()
 						{ ImageTransparency = 0 }
 					):Play()
 				end
-				if callback then
+
+				if callback and not (DoNotCallback == true) then
 					callback(NewToggle)
+				end
+
+				if modproperty.BindOnly then
+					if DoNotCallback then
+					else
+						IsToggled = false
+						IClientYesTarget.Toggled = false
+						ModToggleChanged(false,true)
+					end
+
 				end
 			end
 
@@ -1259,7 +1270,7 @@ function UILibrary:new()
 						IsToggled = not IsToggled
 						IClientYesTarget.Toggled = IsToggled
 						ModToggleChanged(IsToggled)
-						ToggleToggle:ForceToggle()
+						--ToggleToggle:ForceToggle()
 					end
 				end
 			end

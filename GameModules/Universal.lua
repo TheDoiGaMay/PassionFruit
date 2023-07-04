@@ -55,6 +55,7 @@ do
             if args == true then
 
                 Connection = RunService.Heartbeat:Connect(function()
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then else return end
                     if breadcrumbtrail == nil then
                         breadcrumbattachment = Instance.new("Attachment")
                         breadcrumbattachment.Position = Vector3.new(0, 0.07 - 2.9, 0.5)
