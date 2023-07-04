@@ -201,6 +201,19 @@ function BreakBlock(Position)
 			blockhealthbarpos = {
 				blockPosition = blockpos
 			}
+
+            task.spawn(function()
+                local animation
+                animation = BedwarLibrary.AnimationUtil:playAnimation(LocalPlayer, BedwarLibrary.BlockController:getAnimationController():getAssetId(1))
+                BedwarLibrary.ViewmodelController:playAnimation(15)
+                task.wait(0.3)
+                if animation ~= nil then
+                    animation:Stop()
+                    animation:Destroy()
+                end
+            end)
+
+
 			task.spawn(function()
 			BedwarLibrary.ClientHandlerDamageBlock:Get("DamageBlock"):CallServerAsync({
 				blockRef = blockhealthbarpos, 
@@ -215,32 +228,23 @@ function BreakBlock(Position)
 						healthbarblocktable.blockHealth = blockhealth
 						healthbarblocktable.breakingBlockPosition = blockhealthbarpos.blockPosition
 					end
-						healthbarblocktable.blockHealth = result == "destroyed" and 0 or healthbarblocktable.blockHealth
-						blockdmg = BedwarLibrary.BlockController:calculateBlockDamage(LocalPlayer, blockhealthbarpos)
-						healthbarblocktable.blockHealth = math.max(healthbarblocktable.blockHealth - blockdmg, 0)
-							BedwarLibrary.BlockBreaker:updateHealthbar(blockhealthbarpos, healthbarblocktable.blockHealth, block:GetAttribute("MaxHealth"), blockdmg, block)
-								if healthbarblocktable.blockHealth <= 0 then
-									BedwarLibrary.BlockBreaker.breakEffect:playBreak(block.Name, blockhealthbarpos.blockPosition, LocalPlayer)
-									BedwarLibrary.BlockBreaker.healthbarMaid:DoCleaning()
-									healthbarblocktable.breakingBlockPosition = Vector3.zero
-								else
-									BedwarLibrary.BlockBreaker.breakEffect:playHit(block.Name, blockhealthbarpos.blockPosition, LocalPlayer)
-								end
-							end
-							local animation
-							animation = BedwarLibrary.AnimationUtil:playAnimation(LocalPlayer, BedwarLibrary.BlockController:getAnimationController():getAssetId(1))
-							BedwarLibrary.ViewmodelController:playAnimation(15)
-							task.wait(0.3)
-							if animation ~= nil then
-								animation:Stop()
-								animation:Destroy()
-							end
-						
-							failedBreak = failedBreak + 1
-						
-					end)
+
+					healthbarblocktable.blockHealth = result == "destroyed" and 0 or healthbarblocktable.blockHealth
+					blockdmg = BedwarLibrary.BlockController:calculateBlockDamage(LocalPlayer, blockhealthbarpos)
+					healthbarblocktable.blockHealth = math.max(healthbarblocktable.blockHealth - blockdmg, 0)
+					BedwarLibrary.BlockBreaker:updateHealthbar(blockhealthbarpos, healthbarblocktable.blockHealth, block:GetAttribute("MaxHealth"), blockdmg, block)
+						if healthbarblocktable.blockHealth <= 0 then
+							BedwarLibrary.BlockBreaker.breakEffect:playBreak(block.Name, blockhealthbarpos.blockPosition, LocalPlayer)
+							BedwarLibrary.BlockBreaker.healthbarMaid:DoCleaning()
+							healthbarblocktable.breakingBlockPosition = Vector3.zero
+						else
+							BedwarLibrary.BlockBreaker.breakEffect:playHit(block.Name, blockhealthbarpos.blockPosition, LocalPlayer)
+						end
+					end
+					failedBreak = failedBreak + 1
 				end)
-			end
+			end)
+		end
 end
 
 --// Framework
@@ -1120,14 +1124,16 @@ do
             local CurrentPlayerPosition = isAlive() and LocalPlayer.Character.HumanoidRootPart.Position
             local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
             local CurrentHumanoid = LocalPlayer.Character.Humanoid
-
+            local GetCurrentEquuipped = getEquipped()
             local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
             PlaceGinger(pos)
 
-            task.delay(0.1, function()
+            task.delay(0.075, function()
                 local block, pos2 = getPlacedBlock(pos)
                 switchToAndUseTool(block,true)
                 BreakBlock(pos)
+                task.wait(0.1)
+                switchItem(GetCurrentEquuipped.Object,true)
                 --BedwarLibrary.BlockEngineClientEvents.DamageBlock:fire(block.Name, pos, block) 
             end)
 
