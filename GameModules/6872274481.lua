@@ -1039,6 +1039,25 @@ end
 
 
 
+----------// Auto Ginger
+do
+    UtilityTab:newmod(
+        {ModName = "GingerbreadManManMan", ModDescription = "Tired of quick hotkeying + tryharding with ginger? just use this ez peezee",Keybind= "None"},
+        function(args)
+            
+
+        end,
+        {
+            [1] = {
+                DisplayText = "It will just quick hotkey for you so dw",
+                ConfigType = "Label",
+            }
+        }
+    )
+end
+
+
+
 --------------------------------------// Cosmetics Tab
 ----------// Nyx Sound Handler
 do
@@ -1424,6 +1443,7 @@ do
 end
 
 
+
 ----------// Projectile Replacer
 do
 	local arrow = Instance.new("Model")
@@ -1485,6 +1505,7 @@ do
     )
 
 end
+
 
 
 --------------------------------------// Replay Tab (Experimental)
