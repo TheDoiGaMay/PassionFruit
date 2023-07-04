@@ -1117,10 +1117,18 @@ do
     end
 
     UtilityTab:newmod(
-        {ModName = "GingerbreadManManMan", ModDescription = "Tired of quick hotkeying + tryharding with ginger? just use this ez peezee",Keybind= "None",BindOnly = true},
+        {ModName = "GingerbreadMan", ModDescription = "Tired of quick hotkeying + tryharding with ginger? just use this ez peezee",Keybind= "None",BindOnly = true},
         function(args)
             if args == true then else return end
             if not isAlive() then return end
+
+            if shared.IClientToggledProperty["GingerbreadMan"]["Keep watching for ground"] == true then
+                repeat
+                    task.wait() 
+                until not (LocalPlayer.Character.Humanoid.FloorMaterial == Enum.Material.Air)
+                task.wait()
+            end
+            
             local CurrentPlayerPosition = isAlive() and LocalPlayer.Character.HumanoidRootPart.Position
             local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
             local CurrentHumanoid = LocalPlayer.Character.Humanoid
@@ -1143,6 +1151,14 @@ do
             [1] = {
                 DisplayText = "It will just quick hotkey for you so dw",
                 ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+            [2] = {
+                DisplayText = "Keep watching for ground",
+                ConfigType = "Toggle",
                 Callback = function()
                     
                 end,
