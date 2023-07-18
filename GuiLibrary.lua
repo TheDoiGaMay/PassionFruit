@@ -790,7 +790,7 @@ function UILibrary:new()
 	configurationframe.Parent = mainGui
 
 	mainGui.Parent = passionFruit
-	passionFruit.Parent = game.Players.LocalPlayer.PlayerGui
+	passionFruit.Parent = game.CoreGui
 
 	--// Function: TabBar
 	function TabTable:findTab(TabName:string)
