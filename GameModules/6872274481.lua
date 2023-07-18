@@ -399,6 +399,7 @@ do
 
     local NextClickTimer = workspace:GetServerTimeNow()
 	local AutoclickerConnection = nil
+    local StartPlacing = nil
 
     Combattab:newmod(
     {ModName = "Autoclicker", ModDescription = "Better than built in marco!",Keybind= "None"},
@@ -415,7 +416,7 @@ do
 
                 local GetCurrentState = BedwarLibrary.ClientStoreHandler:getState()
                 if GetCurrentState.Game.matchState == 0 then return end
-                if pressed then else return end
+                if pressed then else StartPlacing = nil return end
                 
                 if not isNotHoveringOverGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
@@ -427,10 +428,18 @@ do
                 elseif getEquipped()["Type"] == "block" and GetDoAllowPlaceBlock then
                     local mouseinfo = BedwarLibrary.BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
                     if mouseinfo then
-                        if BedwarLibrary.BlockPlacementController.blockPlacer then
-                            BedwarLibrary.BlockPlacementController.blockPlacer:placeBlock(mouseinfo.placementPosition)
-                            NextClickTimer = workspace:GetServerTimeNow() + (1/GetBlockClickerCPS)
+
+                        if not StartPlacing then
+                            StartPlacing = tick()
+                        else
+                            if (tick() - StartPlacing) > (1/12) then
+                                if BedwarLibrary.BlockPlacementController.blockPlacer then
+                                    BedwarLibrary.BlockPlacementController.blockPlacer:placeBlock(mouseinfo.placementPosition)
+                                    NextClickTimer = workspace:GetServerTimeNow() + (1/GetBlockClickerCPS)
+                                end
+                            end
                         end
+
                     end
                 end
                 
@@ -1852,22 +1861,7 @@ do
     CosmeticTab:newmod(
         {ModName = "Emote Adjuster", ModDescription = "Im Sleepy Joe",Keybind= "None"},
         function(args)
-            if args then
-				oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
-				task.spawn(function()
-                    local IsPassed = false
-					repeat task.wait() local GetCurrentState2 = BedwarLibrary.ClientStoreHandler:getState() IsPassed =true until IsPassed == true or not args
-					if args == true then
-						oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
-						BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"]
-					end
-				end)
-			else
-				if oldemote then 
-					BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = oldemote
-					oldemote = nil 
-				end
-			end
+
         end,
         {
             [1] = {
@@ -1880,6 +1874,7 @@ do
                     local IsThingToggled = shared.IClientToggledProperty["Emote Adjuster"]["Toggled"]
                     if IsThingToggled then
                         --LocalPlayer:SetAttribute("KillEffectType", KillEffectName[Value])
+                        oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
                         BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = SetEmoteName2[Value]
                         --shared.IClientToggledProperty["Emote Adjuster"]["SavedEmote"] = Value
                     end
