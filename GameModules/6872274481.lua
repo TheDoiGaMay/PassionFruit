@@ -1772,7 +1772,50 @@ do
         function(args)
         
         end,
-        {d
+        {
+            [2] = {
+                DisplayText = "Random Color",
+                ConfigType = "Toggle",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+            [2] = {
+                DisplayText = "Color Settings (THIS IS RGB so find your color in google)",
+                ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+            [3] = {
+                DisplayText = "Red",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 0,
+                Min = 0,
+                Max = 255,
+            },
+            [4] = {
+                DisplayText = "Green",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 0,
+                Min = 0,
+                Max = 255,
+            },
+            [5] = {
+                DisplayText = "Blue",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 0,
+                Min = 0,
+                Max = 255,
+            }
         }
     )
 
@@ -1780,7 +1823,13 @@ do
         local IsThingToggled = shared.IClientToggledProperty["IWannaSleep"]["Toggled"]
         if not IsThingToggled then return end
         if (p3.fromEntity == LocalPlayer.Character) then
-            p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.fromRGB(math.random(1,255),math.random(1,255),math.random(1,255))
+
+            if shared.IClientToggledProperty["IWannaSleep"]["Random Color"] == true then
+                p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.fromRGB(math.random(1,255),math.random(1,255),math.random(1,255))
+            else
+                local R,G,B = shared.IClientToggledProperty["IWannaSleep"]["Red"],shared.IClientToggledProperty["IWannaSleep"]["Green"],shared.IClientToggledProperty["IWannaSleep"]["Blue"]
+                p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.fromRGB(R,G,B)
+            end
         else
             p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.FromRGB(255,0,0)
         end
