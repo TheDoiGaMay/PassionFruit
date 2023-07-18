@@ -1773,7 +1773,7 @@ do
         
         end,
         {
-            [2] = {
+            [1] = {
                 DisplayText = "Random Color",
                 ConfigType = "Toggle",
                 Callback = function()
