@@ -1266,6 +1266,7 @@ do
         local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
 
         local offsetpos = pos - Vector3.new(3,0,3)
+        local GetCurrentEquuipped = getEquipped()
 
         for x = 0,2 do
             for z = 0,2 do
@@ -1288,6 +1289,7 @@ do
 
             end
         end
+        switchItem(GetCurrentEquuipped.Object,true)
 
     end
 
@@ -1770,7 +1772,7 @@ do
         function(args)
         
         end,
-        {
+        {d
         }
     )
 
