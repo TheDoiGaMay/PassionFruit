@@ -5,6 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local MainGui = shared.PassionFruitMainGui
 local IClientToggledProperty = shared.IClientToggledProperty
+
 local Combattab = MainGui:newtab("Combat")
 local BlantantTab = MainGui:newtab("Blantant")
 local UtilityTab = MainGui:newtab("Utility")
@@ -365,4 +366,11 @@ do
             }
         }
     )
+end
+
+
+
+----------// Free Cam handler
+do
+    
 end

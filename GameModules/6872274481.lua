@@ -12,7 +12,6 @@ local Combattab = MainGui:findTab("Combat")
 local BlantantTab = MainGui:findTab("Blantant")
 local UtilityTab = MainGui:findTab("Utility")
 local CosmeticTab = MainGui:findTab("Cosmetic")
-local ReplayModTab = MainGui:newtab("ReplayMod")
 
 
 --// Remove Older Mod
@@ -1138,10 +1137,13 @@ do
 
             task.delay(0.075, function()
                 local block, pos2 = getPlacedBlock(pos)
-                switchToAndUseTool(block,true)
-                BreakBlock(pos)
-                task.wait(0.1)
-                switchItem(GetCurrentEquuipped.Object,true)
+                if block then
+                    switchToAndUseTool(block,true)
+                    BreakBlock(pos)
+                    task.wait(0.1)
+                    switchItem(GetCurrentEquuipped.Object,true)
+                end
+              
                 --BedwarLibrary.BlockEngineClientEvents.DamageBlock:fire(block.Name, pos, block) 
             end)
 
@@ -1169,6 +1171,153 @@ do
 end
 
 
+----------// Chest Stealer i think
+do
+
+    local ChestStealerConnection = nil
+    local cheststealerdelays = {}
+
+
+    function ChestGrab()
+
+        local GetChestDelayProperty = shared.IClientToggledProperty["Chest"]["Grab Delay"]
+
+        if BedwarLibrary.AppController:isAppOpen("ChestApp") then
+            local chest = LocalPlayer.Character:FindFirstChild("ObservedChestFolder")
+            local chestitems = chest and chest.Value and chest.Value:GetChildren() or {}
+            if #chestitems > 0 then
+                for i3,v3 in pairs(chestitems) do
+                    if v3:IsA("Accessory") then
+                        if (cheststealerdelays[v3] == nil ) then
+                            cheststealerdelays[v3] = tick() + (GetChestDelayProperty/100)
+                            or cheststealerdelays[v3] < tick()
+                        else
+                            if tick() > cheststealerdelays[v3] then
+                                BedwarLibrary.ClientHandler:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(chest.Value, v3)
+                            end
+                        end
+
+                        --task.wait(GetChestDelayProperty / 100)
+                    end
+                end
+            end
+        end
+    end
+
+    UtilityTab:newmod(
+        {ModName = "Chest", ModDescription = "Hate to manually click?? passionfruit got u covered!",Keybind= "None"},
+        function(args)
+           
+            if args == true then
+
+                ChestStealerConnection = RunService.Heartbeat:Connect(function()
+                    ChestGrab()
+                end)
+
+            else
+                if ChestStealerConnection then
+                    ChestStealerConnection:Disconnect()
+                    ChestStealerConnection = nil
+                end
+            end
+
+        end,
+        {
+            [1] = {
+                DisplayText = "Grab Delay is percentage of 1 second ex 100% is 1 seconds 0% is no delay",
+                ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+
+            [2] = {
+                DisplayText = "Grab Delay",
+                ConfigType = "Slider",
+                Callback = function(Value)
+                end,
+                Default = 100,
+                Min = 0,
+                Max = 100,
+            }
+        }
+    )
+end
+
+
+----------// Auto banner
+do
+    PlaceBlockEngine = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "defense_banner")
+
+    local FlagList = {"damage_banner","heal_banner","defense_banner"}
+    local FlagFunction = {
+        damage_banner = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "damage_banner"),
+        heal_banner = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "heal_banner"),
+        defense_banner =BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "defense_banner")
+
+    }
+
+    function RoudUpPosition(Position)
+        return Vector3.new(math.floor((Position.X / 3) + 0.5) * 3, math.floor((Position.Y / 3) + 0.5) * 3, math.floor((Position.Z / 3) + 0.5) * 3) 
+    end
+
+    function placeflag ()
+
+        local PlacedFlag = {}
+        local CurrentPlayerPosition = isAlive() and LocalPlayer.Character.HumanoidRootPart.Position
+        local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
+        local CurrentHumanoid = LocalPlayer.Character.Humanoid
+
+        local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
+
+        local offsetpos = pos - Vector3.new(3,0,3)
+
+        for x = 0,2 do
+            for z = 0,2 do
+
+                for i , v in pairs (FlagList) do
+                    if getItem(v) then
+                        if not PlacedFlag[v] then
+                            PlacedFlag[v] = true
+                            switchItem(getItem(v).tool,true)
+                            PlaceBlockEngine.blockType = v
+                            task.wait()
+                            task.spawn(function()
+                                PlaceBlockEngine:placeBlock(Vector3.new((offsetpos.X + (x * 3)) / 3, offsetpos.Y / 3, (offsetpos.Z + (z * 3)) / 3))
+                            end)
+                            task.wait((1/12))
+                            break
+                        end
+                        
+                    end
+                end
+
+            end
+        end
+
+    end
+
+    UtilityTab:newmod(
+        {ModName = "Auto Banner", ModDescription = "idk if it actually working",Keybind= "None",BindOnly = true},
+        function(args)
+            if args == true then else return end
+            if not isAlive() then return end
+
+            placeflag()
+        end,
+        {
+            [1] = {
+                DisplayText = "It will just quick hotkey for you so dw",
+                ConfigType = "Label",
+                Callback = function()
+                    
+                end,
+                Value = false
+            },
+        }
+    )
+end
 
 --------------------------------------// Cosmetics Tab
 ----------// Nyx Sound Handler
@@ -1620,26 +1769,3 @@ end
 
 
 
---------------------------------------// Replay Tab (Experimental)
-do
-
-    ReplayModTab:newmod(
-        {ModName = "Play Replay", ModDescription = "Experimental Stage (will get back to it later) (Bind Only)",Keybind= "None"},
-        function(args)
-            
-          if args == false then return end
-          if shared.IClientToggledProperty["Play Replay"]["Select Save File"] == "None" then return end
-
-        end,
-        {
-            [1] = {
-                DisplayText = "Select Save File",
-                ConfigType = "DropDown",
-                List =  {},
-                Value = "None",
-                Callback = function(Value)  
-                end
-            }
-        }
-    )
-end
