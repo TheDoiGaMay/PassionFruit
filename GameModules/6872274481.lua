@@ -1251,12 +1251,6 @@ do
     PlaceBlockEngine = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "defense_banner")
 
     local FlagList = {"damage_banner","heal_banner","defense_banner"}
-    local FlagFunction = {
-        damage_banner = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "damage_banner"),
-        heal_banner = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "heal_banner"),
-        defense_banner =BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "defense_banner")
-
-    }
 
     function RoudUpPosition(Position)
         return Vector3.new(math.floor((Position.X / 3) + 0.5) * 3, math.floor((Position.Y / 3) + 0.5) * 3, math.floor((Position.Z / 3) + 0.5) * 3) 
@@ -1282,7 +1276,6 @@ do
                             PlacedFlag[v] = true
                             switchItem(getItem(v).tool,true)
                             PlaceBlockEngine.blockType = v
-                            task.wait()
                             task.spawn(function()
                                 PlaceBlockEngine:placeBlock(Vector3.new((offsetpos.X + (x * 3)) / 3, offsetpos.Y / 3, (offsetpos.Z + (z * 3)) / 3))
                             end)
@@ -1768,4 +1761,29 @@ do
 end
 
 
+
+----------// I Wanna sleep
+do
+
+    CosmeticTab:newmod(
+        {ModName = "IWannaSleep", ModDescription = "Imma Sleep GN",Keybind= "None"},
+        function(args)
+        
+        end,
+        {
+        }
+    )
+
+    BedwarLibrary["ClientHandler"]:OnEvent("EntityDamageEvent", function(p3)
+        local IsThingToggled = shared.IClientToggledProperty["IWannaSleep"]["Toggled"]
+        if not IsThingToggled then return end
+        if (p3.fromEntity == LocalPlayer.Character) then
+            p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.fromRGB(math.random(1,255),math.random(1,255),math.random(1,255))
+        else
+            p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.FromRGB(255,0,0)
+        end
+    
+    end)
+
+end
 
