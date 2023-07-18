@@ -261,6 +261,7 @@ local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
 
 BedwarLibrary = {
+    EmoteMeta = require(ReplicatedStorage.TS.locker.emote["emote-meta"]).EmoteMeta,
 	KillEffectMeta = require(game.ReplicatedStorage.TS.locker["kill-effect"]["kill-effect-meta"]).KillEffectMeta,
 	KillEffectController = KnitClient.Controllers.KillEffectController,
 	DefaultKillEffect = require(LocalPlayer.PlayerScripts.TS.controllers.game.locker["kill-effect"].effects["default-kill-effect"]),
@@ -1366,7 +1367,6 @@ do
     CosmeticTab:newmod(
         {ModName = "Kill Effect Adjuster", ModDescription = "Change to any kill effect you want beside dont having it",Keybind= "None"},
         function(args)
-           
         end,
         {
             [1] = {
@@ -1838,3 +1838,54 @@ do
 
 end
 
+do
+    local oldemote
+
+    local SetEmoteName = {}
+    local SetEmoteName2 = {}
+	for i,v in pairs(BedwarLibrary.EmoteMeta) do 
+		table.insert(SetEmoteName, v.name)
+		SetEmoteName2[v.name] = i
+	end
+	table.sort(SetEmoteName, function(a, b) return a:lower() < b:lower() end)
+
+    CosmeticTab:newmod(
+        {ModName = "Emote Adjuster", ModDescription = "Im Sleepy Joe",Keybind= "None"},
+        function(args)
+            if args then
+				oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
+				task.spawn(function()
+                    local IsPassed = false
+					repeat task.wait() local GetCurrentState2 = BedwarLibrary.ClientStoreHandler:getState() IsPassed =true until IsPassed == true or not args
+					if args == true then
+						oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
+						BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"]
+					end
+				end)
+			else
+				if oldemote then 
+					BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = oldemote
+					oldemote = nil 
+				end
+			end
+        end,
+        {
+            [1] = {
+                DisplayText = "Selected Emote",
+                ConfigType = "DropDown",
+                List = SetEmoteName,
+                Value = "",
+                Callback = function(Value)
+
+                    local IsThingToggled = shared.IClientToggledProperty["Emote Adjuster"]["Toggled"]
+                    if IsThingToggled then
+                        --LocalPlayer:SetAttribute("KillEffectType", KillEffectName[Value])
+                        BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = SetEmoteName2[Value]
+                        --shared.IClientToggledProperty["Emote Adjuster"]["SavedEmote"] = Value
+                    end
+                end
+            }
+        }
+    )
+
+end
