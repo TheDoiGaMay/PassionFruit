@@ -1861,7 +1861,12 @@ do
     CosmeticTab:newmod(
         {ModName = "Emote Adjuster", ModDescription = "Im Sleepy Joe",Keybind= "None"},
         function(args)
-
+            if args == true then
+                if shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"] and not ( shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"] == "")  then
+                    oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
+                    BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = SetEmoteName2[Value]
+                end
+            end
         end,
         {
             [1] = {
