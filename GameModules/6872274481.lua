@@ -1862,9 +1862,15 @@ do
         {ModName = "Emote Adjuster", ModDescription = "Im Sleepy Joe",Keybind= "None"},
         function(args)
             if args == true then
-                if shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"] and not ( shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"] == "")  then
-                    oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
-                    BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"]
+                if not ( shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"] == "")  then
+                    task.spawn(function()
+                        repeat
+                            task.wait()
+                        until BedwarLibrary.ClientStoreHandler:getState() --and not (BedwarLibrary.ClientStoreHandler:getState().Game.matchState == 0 )
+                        oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
+                        BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = SetEmoteName2[shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"]]
+                    end)
+                   
                 end
             else
                 BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = oldemote
