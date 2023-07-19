@@ -1268,12 +1268,8 @@ do
     function placeflag ()
 
         local PlacedFlag = {}
-        local CurrentPlayerPosition = isAlive() and (LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3)).Position
         local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
         local CurrentHumanoid = LocalPlayer.Character.Humanoid
-        local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
-
-        local offsetpos = pos - Vector3.new(3,0,3)
         local GetCurrentEquuipped = getEquipped()
 
         for x = 0,2 do
@@ -1285,8 +1281,8 @@ do
                         -- Calculating PLayer Position
                         local CurrentPlayerCframe = (LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3))
                         local RandomCFrame = CurrentPlayerCframe * CFrame.new(math.random(-1,1) * 3, 0, math.random(-2,0) * 3)
-                        local CalculatedPosition = Vector3.new(RoudUpPosition(RandomCFrame.Position.X), RoudUpPosition(Vector3.new(0, RandomCFrame.Position.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, RoudUpPosition(RandomCFrame.Position.Z))
-
+                        local CalculatedPosition = Vector3.new(RandomCFrame.Position.X, RoudUpPosition(Vector3.new(0, RandomCFrame.Position.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, RandomCFrame.Position.Z)
+                        local RoundedUp = RoudUpPosition(CalculatedPosition)
                         if not PlacedFlag[v] then
                             PlacedFlag[v] = true
                             switchItem(getItem(v).tool,true)
