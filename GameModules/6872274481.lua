@@ -1147,7 +1147,7 @@ do
 
             task.delay(0.075, function()
                 local block, pos2 = getPlacedBlock(pos)
-                if block then
+                if block or pos2 then
                     switchToAndUseTool(block,true)
                     BreakBlock(pos)
                     task.wait(0.1)
