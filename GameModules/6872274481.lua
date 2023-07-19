@@ -1148,7 +1148,7 @@ do
             task.delay(0.075, function()
                 local block, pos2 = getPlacedBlock(pos)
                 if block or pos2 then
-                    switchToAndUseTool(block,true)
+                    switchToAndUseTool("gumdrop_bounce_pad",true)
                     BreakBlock(pos)
                     task.wait(0.1)
                     switchItem(GetCurrentEquuipped.Object,true)
