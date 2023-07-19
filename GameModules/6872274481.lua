@@ -1281,12 +1281,18 @@ do
 
                 for i , v in pairs (FlagList) do
                     if getItem(v) then
+
+                        -- Calculating PLayer Position
+                        local CurrentPlayerCframe = (LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3))
+                        local RandomCFrame = CurrentPlayerCframe * CFrame.new(math.random(-1,1) * 3, 0, math.random(-2,0) * 3)
+                        local CalculatedPosition = Vector3.new(RoudUpPosition(RandomCFrame.Position.X), RoudUpPosition(Vector3.new(0, RandomCFrame.Position.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, RoudUpPosition(RandomCFrame.Position.Z))
+
                         if not PlacedFlag[v] then
                             PlacedFlag[v] = true
                             switchItem(getItem(v).tool,true)
                             PlaceBlockEngine.blockType = v
                             task.spawn(function()
-                                PlaceBlockEngine:placeBlock(Vector3.new((offsetpos.X + (x * 3)) / 3, offsetpos.Y / 3, (offsetpos.Z + (z * 3)) / 3))
+                                PlaceBlockEngine:placeBlock(Vector3.new(CalculatedPosition.X / 3, CalculatedPosition.Y / 3, CalculatedPosition.Z  / 3))
                             end)
                             task.wait((1/12))
                             break
