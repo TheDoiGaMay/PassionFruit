@@ -1117,6 +1117,7 @@ do
     function PlaceGinger(Position)
         if getItem("gumdrop_bounce_pad") then
             switchItem(getItem("gumdrop_bounce_pad").tool,true)
+            PlaceBlockEngine.blockType = "gumdrop_bounce_pad"
 			return PlaceBlockEngine:placeBlock(Vector3.new(Position.X / 3, Position.Y / 3, Position.Z / 3))
 		end
     end
