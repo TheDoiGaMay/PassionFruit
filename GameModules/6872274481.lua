@@ -1259,7 +1259,7 @@ end
 do
     PlaceBlockEngine = BedwarLibrary.BlockPlacer.new(BedwarLibrary.BlockEngine, "defense_banner")
 
-    local FlagList = {"damage_banner","heal_banner","defense_banner"}
+    local FlagList = {[1] = "damage_banner",[2] = "heal_banner",[3] ="defense_banner"}
 
     function RoudUpPosition(Position)
         return Vector3.new(math.floor((Position.X / 3) + 0.5) * 3, math.floor((Position.Y / 3) + 0.5) * 3, math.floor((Position.Z / 3) + 0.5) * 3) 
