@@ -1268,10 +1268,9 @@ do
     function placeflag ()
 
         local PlacedFlag = {}
-        local CurrentPlayerPosition = isAlive() and LocalPlayer.Character.HumanoidRootPart.Position
+        local CurrentPlayerPosition = isAlive() and (LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3)).Position
         local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
         local CurrentHumanoid = LocalPlayer.Character.Humanoid
-
         local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
 
         local offsetpos = pos - Vector3.new(3,0,3)
