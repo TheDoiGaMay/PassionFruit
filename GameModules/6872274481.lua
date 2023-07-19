@@ -146,7 +146,7 @@ local function getBestTool(block)
 end
 
 local function switchToAndUseTool(block, legit)
-	local tool = getBestTool(block.Name)
+	local tool = getBestTool(typeof(block) == "string" and block or block.Name)
 	if
 		tool
 		and (
