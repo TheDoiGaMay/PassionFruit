@@ -1288,7 +1288,7 @@ do
                             switchItem(getItem(v).tool,true)
                             PlaceBlockEngine.blockType = v
                             task.spawn(function()
-                                PlaceBlockEngine:placeBlock(Vector3.new(CalculatedPosition.X / 3, CalculatedPosition.Y / 3, CalculatedPosition.Z  / 3))
+                                PlaceBlockEngine:placeBlock(Vector3.new(RoundedUp.X / 3, RoundedUp.Y / 3, RoundedUp.Z  / 3))
                             end)
                             task.wait((1/12))
                             break
