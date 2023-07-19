@@ -1144,11 +1144,11 @@ do
             local CurrentHumanoid = LocalPlayer.Character.Humanoid
             local GetCurrentEquuipped = getEquipped()
             local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
-            PlaceGinger(pos)
+            task.spawn(function()
+                PlaceGinger(pos)
+            end)
 
-            task.delay(0.075, function()
-                local block, pos2 = getPlacedBlock(pos)
-               
+            task.delay(0.075, function()               
                 switchToAndUseTool("gumdrop_bounce_pad",true)
                 BreakBlock(pos)
                 task.wait(0.1)
