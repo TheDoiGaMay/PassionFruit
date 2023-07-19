@@ -1192,6 +1192,8 @@ do
         local GetChestDelayProperty = shared.IClientToggledProperty["Chest"]["Grab Delay"]
 
         if BedwarLibrary.AppController:isAppOpen("ChestApp") then
+            local chest = LocalPlayer.Character:FindFirstChild("ObservedChestFolder")
+            local chestitems = chest and chest.Value and chest.Value:GetChildren() or {}
             print(chest.Value.Name)
             if shared.IClientToggledProperty["Chest"]["Skywars Only?"] == true then
                 if BedwarLibrary.ClientStoreHandler:getState().Game.queueType:find("skywars") then
@@ -1200,8 +1202,7 @@ do
                     return
                 end
             end
-            local chest = LocalPlayer.Character:FindFirstChild("ObservedChestFolder")
-            local chestitems = chest and chest.Value and chest.Value:GetChildren() or {}
+          
             if #chestitems > 0 then
                 for i3,v3 in pairs(chestitems) do
                     if v3:IsA("Accessory") then
