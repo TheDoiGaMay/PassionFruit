@@ -1194,7 +1194,7 @@ do
         if BedwarLibrary.AppController:isAppOpen("ChestApp") then
             local chest = LocalPlayer.Character:FindFirstChild("ObservedChestFolder")
             local chestitems = chest and chest.Value and chest.Value:GetChildren() or {}
-            print(chest.Value.Name)
+            --print(chest.Value.Name)
             if shared.IClientToggledProperty["Chest"]["Skywars Only?"] == true then
                 if BedwarLibrary.ClientStoreHandler:getState().Game.queueType:find("skywars") then
                     
@@ -1203,6 +1203,12 @@ do
                 end
             end
           
+            if shared.IClientToggledProperty["Chest"]["Ignore Personal Chest"] == true then
+                if  chest.Value.Name == LocalPlayer.Name.."_personal" then
+                    return
+                end
+            end
+
             if #chestitems > 0 then
                 for i3,v3 in pairs(chestitems) do
                     if v3:IsA("Accessory") then
@@ -1262,6 +1268,14 @@ do
 
             [3] = {
                 DisplayText = "Skywars Only?",
+                ConfigType = "Toggle",
+                Callback = function()
+                    
+                end,
+                Value = false,
+            },
+            [4] = {
+                DisplayText = "Ignore Personal Chest",
                 ConfigType = "Toggle",
                 Callback = function()
                     
