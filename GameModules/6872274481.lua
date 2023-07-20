@@ -1928,7 +1928,9 @@ do
                    
                 end
             else
-                BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = oldemote
+                if oldemote then
+                    BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = oldemote
+                end
             end
         end,
         {
