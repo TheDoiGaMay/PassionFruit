@@ -20,6 +20,9 @@ BlantantTab:RemoveTab()
 
 ---// Varibles
 local BedwarLibrary = {}
+repeat
+    task.wait()
+until  Players.LocalPlayer
 local LocalPlayer = Players.LocalPlayer
 
 
@@ -1148,11 +1151,15 @@ do
                 PlaceGinger(pos)
             end)
 
-            task.delay(0.075, function()               
-                switchToAndUseTool("gumdrop_bounce_pad",true)
-                BreakBlock(pos)
-                task.wait(0.1)
-                switchItem(GetCurrentEquuipped.Object,true)              
+            task.delay(0.075, function()    
+                local block, blockpos = getPlacedBlock(pos)
+                if block.Name == "gumdrop_bounce_pad" then
+                    switchToAndUseTool("gumdrop_bounce_pad",true)
+                    BreakBlock(pos)
+                    task.wait(0.1)
+                    switchItem(GetCurrentEquuipped.Object,true)              
+                end           
+               
                 --BedwarLibrary.BlockEngineClientEvents.DamageBlock:fire(block.Name, pos, block) 
             end)
 
@@ -1293,16 +1300,35 @@ do
 
     local FlagList = {[1] = "damage_banner",[2] = "heal_banner",[3] ="defense_banner"}
 
-    function RoudUpPosition(Position)
+    local function RoudUpPosition(Position)
         return Vector3.new(math.floor((Position.X / 3) + 0.5) * 3, math.floor((Position.Y / 3) + 0.5) * 3, math.floor((Position.Z / 3) + 0.5) * 3) 
+    end
+
+    local function GetrandomPosition()
+
+        local CurrentPlayerHrootSize = game.Players.LocalPlayer.Character.HumanoidRootPart.Size
+        local CurrentHumanoid = game.Players.LocalPlayer.Character.Humanoid
+        local CurrentPlayerCframe = ( game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3))
+        local RandomCFrame = CurrentPlayerCframe * CFrame.new(math.random(-1,1) * 3, 0, math.random(-2,0) * 3)
+        local CalculatedPosition = Vector3.new(RandomCFrame.Position.X, RoudUpPosition(Vector3.new(0, RandomCFrame.Position.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, RandomCFrame.Position.Z)
+        local RoundedUp = RoudUpPosition(CalculatedPosition)
+
+        local block, blockpos = getPlacedBlock(RoundedUp)
+        --print(block, blockpos)
+        if block then
+            GetrandomPosition()
+        else
+            return RoundedUp
+        end
+        
     end
 
     function placeflag ()
 
         local PlacedFlag = {}
-        local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
-        local CurrentHumanoid = LocalPlayer.Character.Humanoid
+        
         local GetCurrentEquuipped = getEquipped()
+
 
         for x = 0,2 do
             for z = 0,2 do
@@ -1311,18 +1337,15 @@ do
                     if getItem(v) then
 
                         -- Calculating PLayer Position
-                        local CurrentPlayerCframe = (LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,-3))
-                        local RandomCFrame = CurrentPlayerCframe * CFrame.new(math.random(-1,1) * 3, 0, math.random(-2,0) * 3)
-                        local CalculatedPosition = Vector3.new(RandomCFrame.Position.X, RoudUpPosition(Vector3.new(0, RandomCFrame.Position.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, RandomCFrame.Position.Z)
-                        local RoundedUp = RoudUpPosition(CalculatedPosition)
+                        local GetTheRandomPosition = GetrandomPosition()
                         if not PlacedFlag[v] then
                             PlacedFlag[v] = true
                             switchItem(getItem(v).tool,true)
                             PlaceBlockEngine.blockType = v
                             task.spawn(function()
-                                PlaceBlockEngine:placeBlock(Vector3.new(RoundedUp.X / 3, RoundedUp.Y / 3, RoundedUp.Z  / 3))
+                                PlaceBlockEngine:placeBlock(Vector3.new(GetTheRandomPosition.X / 3, GetTheRandomPosition.Y / 3, GetTheRandomPosition.Z  / 3))
                             end)
-                            task.wait((1/12))
+                            task.wait((1/10))
                             break
                         end
                         
@@ -1863,8 +1886,8 @@ do
     BedwarLibrary["ClientHandler"]:OnEvent("EntityDamageEvent", function(p3)
         local IsThingToggled = shared.IClientToggledProperty["IWannaSleep"]["Toggled"]
         if not IsThingToggled then return end
+        if p3.entityInstance:FindFirstChild("_DamageHighlight_") then else return end
         if (p3.fromEntity == LocalPlayer.Character) then
-
             if shared.IClientToggledProperty["IWannaSleep"]["Random Color"] == true then
                 p3.entityInstance:FindFirstChild("_DamageHighlight_").FillColor = Color3.fromRGB(math.random(1,255),math.random(1,255),math.random(1,255))
             else
