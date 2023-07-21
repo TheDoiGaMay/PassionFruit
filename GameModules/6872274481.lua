@@ -28,6 +28,7 @@ local LocalPlayer = Players.LocalPlayer
 
 --// Bindable
 local updateitem = Instance.new("BindableEvent")
+local DoNotPlaceAnyBlock = false
 
 --// Synapse Functions
 local getcustomasset = getsynasset or getcustomasset or function(location) return "rbxasset://"..location end
@@ -428,7 +429,7 @@ do
                 if getEquipped()["Type"] == "sword" then 
                     NextClickTimer = workspace:GetServerTimeNow() + (1/GetAutoClickerCPS)
                     BedwarLibrary.SwordController:swingSwordAtMouse()
-                elseif getEquipped()["Type"] == "block" and GetDoAllowPlaceBlock then
+                elseif getEquipped()["Type"] == "block" and GetDoAllowPlaceBlock and DoNotPlaceAnyBlock == false then
                     local mouseinfo = BedwarLibrary.BlockPlacementController.blockPlacer.clientManager:getBlockSelector():getMouseInfo(0)
                     if mouseinfo then
 
@@ -1146,6 +1147,7 @@ do
             local CurrentPlayerHrootSize = LocalPlayer.Character.HumanoidRootPart.Size
             local CurrentHumanoid = LocalPlayer.Character.Humanoid
             local GetCurrentEquuipped = getEquipped()
+            DoNotPlaceAnyBlock = true
             local pos = Vector3.new(CurrentPlayerPosition.X, RoudUpPosition(Vector3.new(0, CurrentPlayerPosition.Y - (((CurrentPlayerHrootSize.Y / 2) + CurrentHumanoid.HipHeight) - 1.5), 0)).Y, CurrentPlayerPosition.Z)
             task.spawn(function()
                 PlaceGinger(pos)
@@ -1157,7 +1159,8 @@ do
                     switchToAndUseTool("gumdrop_bounce_pad",true)
                     BreakBlock(pos)
                     task.wait(0.1)
-                    switchItem(GetCurrentEquuipped.Object,true)              
+                    switchItem(GetCurrentEquuipped.Object,true)  
+                    DoNotPlaceAnyBlock = false            
                 end           
                
                 --BedwarLibrary.BlockEngineClientEvents.DamageBlock:fire(block.Name, pos, block) 
@@ -1329,7 +1332,7 @@ do
         
         local GetCurrentEquuipped = getEquipped()
 
-
+        DoNotPlaceAnyBlock = true
         for x = 0,2 do
             for z = 0,2 do
 
@@ -1355,7 +1358,7 @@ do
             end
         end
         switchItem(GetCurrentEquuipped.Object,true)
-
+        DoNotPlaceAnyBlock = false
     end
 
     UtilityTab:newmod(
