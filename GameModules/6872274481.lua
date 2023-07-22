@@ -1421,19 +1421,13 @@ end
 
 ----------// Very Ouchie Sound Handler
 do
-    local oldsound
     local Combo = 1
 	local TheWorkspacetime = workspace:GetServerTimeNow()
     CosmeticTab:newmod(
         {ModName = "Better Combat Sound Part 2", ModDescription = "You will feel so satisfied when fighting while turning this on",Keybind= "None"},
         function(args)
             if args then
-                oldsound = BedwarLibrary["SoundList"]["DAMAGE_3"]
-                print(oldsound)
-                --print(table.unpack(oldsound))
-                for index, value in oldsound do
-                    print(index, value)
-                end
+                BedwarLibrary.SoundManager:registerSound("rbxassetid://3919693908",{volume = 1 })
             end
         end,
         {
@@ -1450,7 +1444,7 @@ do
         if (p3.fromEntity == LocalPlayer.Character) then
             local IsThingToggled = shared.IClientToggledProperty["Better Combat Sound"]["Toggled"]
             if not IsThingToggled then return end
-            BedwarLibrary.SoundManager:playSound(BedwarLibrary["SoundList"]["MIDNIGHT_ATTACK_" .. Combo])
+            BedwarLibrary.SoundManager:playSound("rbxassetid://3919693908")
             TheWorkspacetime = workspace:GetServerTimeNow() + 2
             Combo = math.clamp(Combo + 1, 1, 5)
             BedwarLibrary.SoundManager:registerSound(BedwarLibrary["SoundList"]["DAMAGE_3"],{volume = 0 })
