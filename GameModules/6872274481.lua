@@ -1419,7 +1419,7 @@ do
 
 end
 
-----------// Very Ouchie Sound Handler
+----------// Very Boom Boom Sound Sound Handler
 do
     local Combo = 1
 	local TheWorkspacetime = workspace:GetServerTimeNow()
@@ -1444,16 +1444,42 @@ do
         if (p3.fromEntity == LocalPlayer.Character) then
             local IsThingToggled = shared.IClientToggledProperty["Better Combat Sound Part 2"]["Toggled"]
             if not IsThingToggled then return end
-            BedwarLibrary.SoundManager:playSound("rbxassetid://3919693908")
-            TheWorkspacetime = workspace:GetServerTimeNow() + 2
-            Combo = math.clamp(Combo + 1, 1, 5)
             BedwarLibrary.SoundManager:registerSound(BedwarLibrary["SoundList"]["DAMAGE_3"],{volume = 0 })
+            local Hello = BedwarLibrary.SoundManager:playSound("rbxassetid://3919693908")
+            Hello.TimePosition = 0.4
         else
             BedwarLibrary.SoundManager:registerSound(BedwarLibrary["SoundList"]["DAMAGE_3"],{volume = 1})
         end
     
     end)
 
+end
+
+----------// Very Ouchie Sound Handler
+do
+    local OldTNTSound,OldFireballSound
+  
+    CosmeticTab:newmod(
+        {ModName = "Micheal bay", ModDescription = "You will feel so satisfied when fighting while turning this on",Keybind= "None"},
+        function(args)
+            if args then
+                OldTNTSound = BedwarLibrary["SoundList"]["TNT_EXPLODE_1"]
+                OldFireballSound = BedwarLibrary["SoundList"]["FIREBALL_EXPLODE"]
+                BedwarLibrary["SoundList"]["TNT_EXPLODE_1"] = "rbxassetid://3995434918"
+                BedwarLibrary["SoundList"]["FIREBALL_EXPLODE"] = "rbxassetid://3995434918"
+                --BedwarLibrary.SoundManager:registerSound("rbxassetid://3919693908",{volume = 1,TimePosition = 0.3 })
+            else
+                if OldTNTSound then
+                    BedwarLibrary["SoundList"]["TNT_EXPLODE_1"] = OldTNTSound
+                end
+                if OldFireballSound then
+                    BedwarLibrary["SoundList"]["FIREBALL_EXPLODE"] = OldFireballSound
+                end
+            end
+        end,
+        {
+        }
+    )
 end
 
 ----------// Kill Effect Handler
