@@ -1430,7 +1430,7 @@ do
             if args then
                 oldsound = BedwarLibrary["SoundList"]["DAMAGE_3"]
                 print(oldsound)
-                print(table.unpack(oldsound))
+                --print(table.unpack(oldsound))
                 for index, value in oldsound do
                     print(index, value)
                 end
