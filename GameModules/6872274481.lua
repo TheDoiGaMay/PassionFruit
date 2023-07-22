@@ -1427,7 +1427,7 @@ do
         {ModName = "Better Combat Sound Part 2", ModDescription = "You will feel so satisfied when fighting while turning this on",Keybind= "None"},
         function(args)
             if args then
-                BedwarLibrary.SoundManager:registerSound("rbxassetid://3919693908",{volume = 1 })
+                BedwarLibrary.SoundManager:registerSound("rbxassetid://3919693908",{volume = 1,TimePosition = 0.3 })
             end
         end,
         {
@@ -1442,7 +1442,7 @@ do
 
     BedwarLibrary["ClientHandler"]:OnEvent("EntityDamageEvent", function(p3)
         if (p3.fromEntity == LocalPlayer.Character) then
-            local IsThingToggled = shared.IClientToggledProperty["Better Combat Sound"]["Toggled"]
+            local IsThingToggled = shared.IClientToggledProperty["Better Combat Sound Part 2"]["Toggled"]
             if not IsThingToggled then return end
             BedwarLibrary.SoundManager:playSound("rbxassetid://3919693908")
             TheWorkspacetime = workspace:GetServerTimeNow() + 2
