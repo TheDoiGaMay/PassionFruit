@@ -2059,6 +2059,12 @@ do
                         end
                     end
 
+                    if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
+                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100) * (NearPlayerOnly and IsNear == false and IsStillFakeLag and 0.5 or 1)
+                        TimeToStartFakeLag = tick() + ((shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100))
+                    end
+                    
+
                     if LagToWhatTime > tick() then
                             
                         game:GetService("NetworkClient"):SetOutgoingKBPSLimit((NearPlayerOnly and IsNear == false and IsStillFakeLag and 4 or 1))
@@ -2066,15 +2072,12 @@ do
                         if IsLagging == false then
                             IsLagging = true
                             print("Lagging")
-                            game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
                         end
 
 
                         if FirstTimeLagging == false then
                             FirstTimeLagging = true
-                            for i = 1,10 do
-                                game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
-                            end
+                           
                         end
                     else
                         if IsLagging == true then
@@ -2085,11 +2088,7 @@ do
                     end
 
 
-                    if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
-                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100) * (NearPlayerOnly and IsNear == false and IsStillFakeLag and 0.5 or 1)
-                        TimeToStartFakeLag = tick() + ((shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100))
-                    end
-                    
+                   
                 end)
 
             else
@@ -2170,8 +2169,8 @@ do
         local method = getnamecallmethod()
         local args = {...}
         pcall(function()
-            local IgnoreRemote = shared.IClientToggledProperty["Fake Lag"]["Igore Remote Lag Delay"]
-            if (method == "FireServer" or method == "InvokeServer") and (args[2] and args[2].chargedAttack and args[2].weapon or IgnoreRemote) then
+
+            if (method == "FireServer" or method == "InvokeServer") and (args[2] and args[2].chargedAttack and args[2].weapon) then
                 TimeToStartFakeLag = tick() + 0.075
                 LagToWhatTime = tick()
                 task.spawn(function()
