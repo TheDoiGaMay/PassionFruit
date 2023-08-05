@@ -375,3 +375,88 @@ do
     
 end
 
+----------// Fake Lag handler
+do
+
+    local TheConnection
+    local LagToWhatTime = tick()
+    local TimeToStartFakeLag = tick()
+    local FirstTimeLagging = false
+    local IsLagging = false
+    BlantantTab:newmod(
+        {ModName = "Fake Lag", ModDescription = "Uhm idk",Keybind= "None"},
+        function(args)
+            if args == true then
+                TheConnection = RunService.Heartbeat:Connect(function()
+
+                    if LagToWhatTime > tick() then
+                            
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit((NearPlayerOnly and IsNear == false and IsStillFakeLag and 4 or 1))
+
+                        if IsLagging == false then
+                            IsLagging = true
+                            print("Lagging")
+                            game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
+                        end
+
+
+                        if FirstTimeLagging == false then
+                            FirstTimeLagging = true
+                            for i = 1,10 do
+                                game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
+                            end
+                        end
+                    else
+                        if IsLagging == true then
+                            IsLagging = false
+                            print("Stopping Lagging")
+                        end
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+                    end
+
+
+                    if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
+                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
+                        TimeToStartFakeLag = tick() + ((shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100))
+                    end
+                    
+                end)
+
+            else
+                if TheConnection then
+                    TheConnection:Disconnect()
+                end
+                game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+            end
+        end,
+        {
+        [1] = {
+            DisplayText = "This one 100 is 1 seconds 0 is 0 seconds",
+            ConfigType = "Label",
+        },
+        [2] = {
+            DisplayText = "Spoof Time",
+            ConfigType = "Slider",
+            Callback = function()
+                
+            end,
+            Default = 50,
+            Min = 1,
+            Max = 100,
+            },
+        [3] = {
+            DisplayText = "Spoof Each Delay",
+            ConfigType = "Slider",
+            Callback = function()
+                    
+            end,
+            Default = 50,
+            Min = 1,
+            Max = 100,
+        },
+        }
+    )
+
+end
+
+

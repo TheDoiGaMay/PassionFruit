@@ -16,7 +16,7 @@ local CosmeticTab = MainGui:findTab("Cosmetic")
 
 --// Remove Older Mod
 Combattab:RemoveMod("Autoclicker")
-
+BlantantTab:RemoveMod("Fake Lag")
 ---// Varibles
 local BedwarLibrary = {}
 repeat
