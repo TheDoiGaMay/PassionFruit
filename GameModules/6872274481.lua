@@ -2044,7 +2044,7 @@ do
                             else
                                 if v.TeamColor == LocalPlayer.TeamColor then
                                 else
-                                    if (v.Character.PrimaryPart.Position -LocalPlayer.Character.PrimaryPart.Position).Magnitude < Radius then
+                                    if v and v.Character and v.Character.PrimaryPart and (v.Character.PrimaryPart.Position -LocalPlayer.Character.PrimaryPart.Position).Magnitude < Radius then
                                         IsNear = true
                                     end
                                 end
@@ -2086,8 +2086,8 @@ do
 
 
                     if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
-                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
-                        TimeToStartFakeLag = tick() + (shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
+                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100) * (NearPlayerOnly and IsNear == false and IsStillFakeLag and 0.5 or 1)
+                        TimeToStartFakeLag = tick() + ((shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100))
                     end
                     
                 end)
@@ -2164,9 +2164,9 @@ do
         local args = {...}
         pcall(function()
         if (method == "FireServer" or method == "InvokeServer") and args[2] and args[2].chargedAttack and args[2].weapon then
-            game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
             TimeToStartFakeLag = tick() + 0.075
             LagToWhatTime = tick()
+            game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
             end
         end)
         return backup(...)
