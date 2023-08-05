@@ -2164,6 +2164,7 @@ do
         local args = {...}
         pcall(function()
         if (method == "FireServer" or method == "InvokeServer") and args[2] and args[2].chargedAttack and args[2].weapon then
+            game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
             TimeToStartFakeLag = tick() + 0.075
             LagToWhatTime = tick()
             end
