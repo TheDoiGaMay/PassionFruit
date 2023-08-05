@@ -2032,7 +2032,7 @@ do
         function(args)
             if args == true then
                 TheConnection = RunService.Heartbeat:Connect(function()
-                    local IsStillFakeLag = shared.IClientToggledProperty["Fake Lag"]["if not still do fake lag but not that much when not near player"]
+                    local IsStillFakeLag = shared.IClientToggledProperty["Fake Lag"]["still do fake lag but not that much when not near player"]
                     local Radius = shared.IClientToggledProperty["Fake Lag"]["Player Radius"]
                     local NearPlayerOnly = shared.IClientToggledProperty["Fake Lag"]["Near Player Only?"]
                     local IsNear = false
