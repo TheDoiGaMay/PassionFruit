@@ -392,20 +392,16 @@ do
 
                     if LagToWhatTime > tick() then
                             
-                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit((NearPlayerOnly and IsNear == false and IsStillFakeLag and 4 or 1))
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit( 1)
 
                         if IsLagging == false then
                             IsLagging = true
                             print("Lagging")
-                            game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
                         end
 
 
                         if FirstTimeLagging == false then
                             FirstTimeLagging = true
-                            for i = 1,10 do
-                                game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
-                            end
                         end
                     else
                         if IsLagging == true then

@@ -2169,8 +2169,8 @@ do
         local method = getnamecallmethod()
         local args = {...}
         pcall(function()
-
-            if (method == "FireServer" or method == "InvokeServer") and (args[2] and args[2].chargedAttack and args[2].weapon) then
+            local IgnoreRemote = shared.IClientToggledProperty["Fake Lag"]["Igore Remote Lag Delay"]
+            if (method == "FireServer" or method == "InvokeServer") and ((args[2] and args[2].chargedAttack and args[2].weapon) or IgnoreRemote) then
                 TimeToStartFakeLag = tick() + 0.075
                 LagToWhatTime = tick()
                 task.spawn(function()
