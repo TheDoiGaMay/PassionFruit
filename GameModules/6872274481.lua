@@ -2061,7 +2061,7 @@ do
 
                     if LagToWhatTime > tick() then
                             
-                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(1)
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit((NearPlayerOnly and IsNear == false and IsStillFakeLag and 3 or 1))
 
                         if IsLagging == false then
                             IsLagging = true
@@ -2086,7 +2086,7 @@ do
 
 
                     if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
-                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100) * (NearPlayerOnly and IsNear == false and IsStillFakeLag and 0.5 or 1) 
+                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
                         TimeToStartFakeLag = tick() + (shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
                     end
                     
