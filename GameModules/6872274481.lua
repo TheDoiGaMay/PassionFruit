@@ -2032,10 +2032,13 @@ do
         function(args)
             if args == true then
                 TheConnection = RunService.Heartbeat:Connect(function()
-                    
-                    if shared.IClientToggledProperty["Fake Lag"]["Near Player Only?"] then
-                        local IsNear = false
-                        local Radius = shared.IClientToggledProperty["Fake Lag"]["Player Radius"]
+                    local IsStillFakeLag = shared.IClientToggledProperty["Fake Lag"]["if not still do fake lag but not that much when not near player"]
+                    local Radius = shared.IClientToggledProperty["Fake Lag"]["Player Radius"]
+                    local NearPlayerOnly = shared.IClientToggledProperty["Fake Lag"]["Near Player Only?"]
+                    local IsNear = false
+
+                    if  NearPlayerOnly then
+
                         for i , v in pairs(Players:GetPlayers()) do
                             if v == LocalPlayer then
                             else
@@ -2047,17 +2050,26 @@ do
                                 end
                             end
                         end
-                        if IsNear == false then FirstTimeLagging = false game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge) return end
+                        if IsNear == false then 
+                            if not IsStillFakeLag then
+                                FirstTimeLagging = false 
+                                game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge) 
+                                return 
+                            end
+                        end
                     end
 
                     if LagToWhatTime > tick() then
+                            
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(1)
+
                         if IsLagging == false then
                             IsLagging = true
                             print("Lagging")
                             game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
                         end
 
-                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(1)
+
                         if FirstTimeLagging == false then
                             FirstTimeLagging = true
                             for i = 1,10 do
@@ -2074,7 +2086,7 @@ do
 
 
                     if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
-                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
+                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100) * (NearPlayerOnly and IsNear == false and IsStillFakeLag and 0.5 or 1) 
                         TimeToStartFakeLag = tick() + (shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
                     end
                     
@@ -2119,7 +2131,18 @@ do
             end,
             Value = false,
         },
-        [5] = {
+        [4] = {
+            DisplayText = "still do fake lag but not that much when not near player",
+            ConfigType = "Toggle",
+            Callback = function()
+            end,
+            Value = false,
+        },
+        [6] = {
+            DisplayText = "The Radius is stud btw",
+            ConfigType = "Label",
+        },
+        [7] = {
             DisplayText = "Player Radius",
             ConfigType = "Slider",
             Callback = function()
