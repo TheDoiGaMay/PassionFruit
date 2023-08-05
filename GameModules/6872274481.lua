@@ -2061,7 +2061,7 @@ do
 
                     if LagToWhatTime > tick() then
                             
-                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit((NearPlayerOnly and IsNear == false and IsStillFakeLag and 3 or 1))
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit((NearPlayerOnly and IsNear == false and IsStillFakeLag and 4 or 1))
 
                         if IsLagging == false then
                             IsLagging = true
