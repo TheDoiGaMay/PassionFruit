@@ -2130,7 +2130,7 @@ do
             end,
             Value = false,
         },
-        [4] = {
+        [5] = {
             DisplayText = "still do fake lag but not that much when not near player",
             ConfigType = "Toggle",
             Callback = function()
@@ -2151,13 +2151,6 @@ do
             Min = 8,
             Max = 32,
         },
-        [8] = {
-            DisplayText = "Igore Remote Lag Delay",
-            ConfigType = "Toggle",
-            Callback = function(Value)
-            end,
-            Value = false,
-        },
         }
     )
 
@@ -2169,9 +2162,8 @@ do
         local method = getnamecallmethod()
         local args = {...}
         pcall(function()
-            local IgnoreRemote = shared.IClientToggledProperty["Fake Lag"]["Igore Remote Lag Delay"]
             if (method == "FireServer" or method == "InvokeServer") then
-                if ((args[2] and args[2].chargedAttack and args[2].weapon) or IgnoreRemote) and tick() > TimeToStartFakeLag then
+                if ((args[2] and args[2].chargedAttack and args[2].weapon)) and tick() > TimeToStartFakeLag then
                     TimeToStartFakeLag = tick() + 0.075
                     LagToWhatTime = tick()
                     task.spawn(function()
