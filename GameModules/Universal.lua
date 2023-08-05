@@ -375,6 +375,7 @@ do
     
 end
 
+
 ----------// Fake Lag handler
 do
 
@@ -410,6 +411,7 @@ do
                         if IsLagging == true then
                             IsLagging = false
                             print("Stopping Lagging")
+
                         end
                         game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
                     end
@@ -441,7 +443,7 @@ do
                 
             end,
             Default = 50,
-            Min = 1,
+            Min = 0,
             Max = 100,
             },
         [3] = {
@@ -451,11 +453,38 @@ do
                     
             end,
             Default = 50,
-            Min = 1,
+            Min = 0,
             Max = 100,
+        },
+        [4] = {
+            DisplayText = "Igore Remote Lag Delay",
+            ConfigType = "Toggle",
+            Callback = function(Value)
+            end,
+            Value = false,
         },
         }
     )
+
+    local mt = getrawmetatable(game)
+    local backup = mt.__namecall
+    if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
+
+    mt.__namecall = newcclosure(function(...)
+        local method = getnamecallmethod()
+        local args = {...}
+        pcall(function()
+            local IgnoreRemote = shared.IClientToggledProperty["Fake Lag"]["Igore Remote Lag Delay"]
+            if (method == "FireServer" or method == "InvokeServer") and IgnoreRemote then
+                TimeToStartFakeLag = tick() + 0.075
+                LagToWhatTime = tick()
+                task.spawn(function()
+                    game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+                end)
+            end
+        end)
+        return backup(...)
+    end)
 
 end
 
