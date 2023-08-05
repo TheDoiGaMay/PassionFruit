@@ -16,7 +16,6 @@ local CosmeticTab = MainGui:findTab("Cosmetic")
 
 --// Remove Older Mod
 Combattab:RemoveMod("Autoclicker")
-BlantantTab:RemoveTab()
 
 ---// Varibles
 local BedwarLibrary = {}
@@ -317,6 +316,7 @@ BedwarLibrary = {
 	),
 	["FishermanTable"] = KnitClient.Controllers.FishermanController,
 	["GameAnimationUtil"] = require(game:GetService("ReplicatedStorage").TS.animation["animation-util"]).GameAnimationUtil,
+    GameAnimationType = require(ReplicatedStorage.TS.animation["animation-type"]).AnimationType,
 	["GamePlayerUtil"] = require(game:GetService("ReplicatedStorage").TS.player["player-util"]).GamePlayerUtil,
 	["getEntityTable"] = require(game:GetService("ReplicatedStorage").TS.entity["entity-util"]).EntityUtil,
 	["getInventory"] = function(plr)
@@ -2016,5 +2016,155 @@ do
             }
         }
     )
+
+end
+
+----------// Fake Lag handler
+do
+
+    local TheConnection
+    local LagToWhatTime = tick()
+    local TimeToStartFakeLag = tick()
+    local FirstTimeLagging = galse
+    local IsLagging = false
+    BlantantTab:newmod(
+        {ModName = "Fake Lag", ModDescription = "Uhm idk",Keybind= "None"},
+        function(args)
+            if args == true then
+                TheConnection = RunService.Heartbeat:Connect(function()
+                    
+                    if shared.IClientToggledProperty["Fake Lag"]["Near Player Only?"] then
+                        local IsNear = false
+                        local Radius = shared.IClientToggledProperty["Fake Lag"]["Player Radius"]
+                        for i , v in pairs(Players:GetPlayers()) do
+                            if v == LocalPlayer then
+                            else
+                                if v.TeamColor == LocalPlayer.TeamColor then
+                                else
+                                    if (v.Character.PrimaryPart.Position -LocalPlayer.Character.PrimaryPart.Position).Magnitude < Radius then
+                                        IsNear = true
+                                    end
+                                end
+                            end
+                        end
+                        if IsNear == false then FirstTimeLagging = false game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge) return end
+                    end
+
+                    if LagToWhatTime > tick() then
+                        if IsLagging == false then
+                            IsLagging = true
+                            print("Lagging")
+                            game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
+                        end
+
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(1)
+                        if FirstTimeLagging == false then
+                            FirstTimeLagging = true
+                            for i = 1,10 do
+                                game:GetService("ReplicatedStorage").rbxts_include.node_modules["@rbxts"].net.out._NetManaged.GroundHit:FireServer()
+                            end
+                        end
+                    else
+                        if IsLagging == true then
+                            IsLagging = false
+                            print("Stopping Lagging")
+                        end
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+                    end
+
+
+                    if LagToWhatTime < tick() and tick() > TimeToStartFakeLag then
+                        LagToWhatTime = tick() +  (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
+                        TimeToStartFakeLag = tick() + (shared.IClientToggledProperty["Fake Lag"]["Spoof Each Delay"]/100)  + (shared.IClientToggledProperty["Fake Lag"]["Spoof Time"]/100)
+                    end
+                    
+                end)
+
+            else
+                if TheConnection then
+                    TheConnection:Disconnect()
+                end
+                game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+            end
+        end,
+        {
+        [1] = {
+            DisplayText = "This one 100 is 1 seconds 0 is 0 seconds",
+            ConfigType = "Label",
+        },
+        [2] = {
+            DisplayText = "Spoof Time",
+            ConfigType = "Slider",
+            Callback = function()
+                
+            end,
+            Default = 50,
+            Min = 1,
+            Max = 100,
+            },
+        [3] = {
+            DisplayText = "Spoof Each Delay",
+            ConfigType = "Slider",
+            Callback = function()
+                    
+            end,
+            Default = 50,
+            Min = 1,
+            Max = 100,
+        },
+        [4] = {
+            DisplayText = "Near Player Only?",
+            ConfigType = "Toggle",
+            Callback = function()
+            end,
+            Value = false,
+        },
+        [5] = {
+            DisplayText = "Player Radius",
+            ConfigType = "Slider",
+            Callback = function()
+                
+            end,
+            Default = 16,
+            Min = 8,
+            Max = 32,
+        }
+        }
+    )
+
+    local mt = getrawmetatable(game)
+    local backup = mt.__namecall
+    if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
+
+    mt.__namecall = newcclosure(function(...)
+        local method = getnamecallmethod()
+        local args = {...}
+        pcall(function()
+        if (method == "FireServer" or method == "InvokeServer") and args[2] and args[2].chargedAttack and args[2].weapon then
+            TimeToStartFakeLag = tick() + 0.15
+            LagToWhatTime = tick()
+            end
+        end)
+        return backup(...)
+    end)
+
+    --[[
+    BedwarLibrary["ClientHandler"]:OnEvent("EntityDamageEvent", function(p3)
+        local IsThingToggled = shared.IClientToggledProperty["Fake Lag"]["Toggled"]
+        if not IsThingToggled then return end
+
+        if (p3.fromEntity == LocalPlayer.Character) then
+           
+           
+            TimeToStartFakeLag = tick() + 0.5
+            LagToWhatTime = tick()
+
+        elseif p3.entityInstance == LocalPlayer.Character then 
+
+          
+        
+        end
+    
+    end)]]
 
 end

@@ -1,0 +1,23 @@
+
+--[[
+do
+    BlantantTab:newmod(
+        {ModName = "Funny Haha Woop WOop", ModDescription = "Man im dead seeing dinnerbone bro",Keybind= "None"},
+        function(args)
+            if args == true then
+               
+                local char = LocalPlayer.Character
+                char.LowerTorso.Root.C0 = char.LowerTorso.Root.C0 * CFrame.Angles(0, 0, math.pi) * CFrame.new(0, -1, 0)
+
+                --// Play animation
+                local animation = BedwarLibrary.AnimationUtil:playAnimation(LocalPlayer, BedwarLibrary.AnimationUtil.getAnimation("BOXING_GLOVE_UPPER_CUT"))
+                
+            else
+               
+            end
+        end,
+        {
+          
+        }
+    )
+end]]
