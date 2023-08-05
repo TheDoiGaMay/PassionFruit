@@ -471,12 +471,14 @@ do
         local args = {...}
         pcall(function()
             local IgnoreRemote = shared.IClientToggledProperty["Fake Lag"]["Igore Remote Lag Delay"]
-            if (method == "FireServer" or method == "InvokeServer") and IgnoreRemote then
-                TimeToStartFakeLag = tick() + 0.075
-                LagToWhatTime = tick()
-                task.spawn(function()
-                    game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
-                end)
+            if (method == "FireServer" or method == "InvokeServer") then
+                if IgnoreRemote and tick() > TimeToStartFakeLag then
+                    TimeToStartFakeLag = tick() + 0.075
+                    LagToWhatTime = tick()
+                    task.spawn(function()
+                        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+                    end)
+                end
             end
         end)
         return backup(...)
