@@ -2163,34 +2163,14 @@ do
         local method = getnamecallmethod()
         local args = {...}
         pcall(function()
-        if (method == "FireServer" or method == "InvokeServer") and args[2] and args[2].chargedAttack and args[2].weapon then
-            TimeToStartFakeLag = tick() + 0.075
-            LagToWhatTime = tick()
-            task.spawn(function()
-                game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
-            end)
+            if (method == "FireServer" or method == "InvokeServer") and args[2] and args[2].chargedAttack and args[2].weapon then
+                TimeToStartFakeLag = tick() + 0.075
+                LagToWhatTime = tick()
+                task.spawn(function()
+                    game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+                end)
             end
         end)
         return backup(...)
     end)
-
-    --[[
-    BedwarLibrary["ClientHandler"]:OnEvent("EntityDamageEvent", function(p3)
-        local IsThingToggled = shared.IClientToggledProperty["Fake Lag"]["Toggled"]
-        if not IsThingToggled then return end
-
-        if (p3.fromEntity == LocalPlayer.Character) then
-           
-           
-            TimeToStartFakeLag = tick() + 0.5
-            LagToWhatTime = tick()
-
-        elseif p3.entityInstance == LocalPlayer.Character then 
-
-          
-        
-        end
-    
-    end)]]
-
 end
