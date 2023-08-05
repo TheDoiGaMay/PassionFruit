@@ -516,7 +516,7 @@ do
 
 	local function PlayerAdded(PlayerAddedthingy)
 		Connectionlist[PlayerAddedthingy] = RunService.Heartbeat:Connect(function(args)
-			if isAlive(PlayerAddedthingy) and not PlayerAddedthingy.Character:FindFirstChild("wkaodmkads") and not (PlayerAddedthingy.Team.TeamColor == LocalPlayer.Team.TeamColor) then
+			if isAlive(PlayerAddedthingy) and not PlayerAddedthingy.Character:FindFirstChild("wkaodmkads") and not (PlayerAddedthingy.TeamColor == LocalPlayer.TeamColor) then
 				local DoesShowHitbox = shared.IClientToggledProperty["Hitboxes"]["Show Hitbox"]
                 CharacterAdded(PlayerAddedthingy.Character,DoesShowHitbox)
 			end
@@ -2166,7 +2166,9 @@ do
         if (method == "FireServer" or method == "InvokeServer") and args[2] and args[2].chargedAttack and args[2].weapon then
             TimeToStartFakeLag = tick() + 0.075
             LagToWhatTime = tick()
-            game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+            task.spawn(function()
+                game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
+            end)
             end
         end)
         return backup(...)
