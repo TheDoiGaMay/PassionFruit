@@ -1398,8 +1398,14 @@ do
             if args then
                 OldGetFov = BedwarLibrary.FovController.getFOV
                 OldSetFov = BedwarLibrary.FovController.setFOV
-				BedwarLibrary.FovController.setFOV = function(self, fov) return OldSetFov(self, BedwarLibrary.ClientStoreHandler:getState().Settings.fov) end
-				BedwarLibrary.FovController.getFOV = function(self, fov) return BedwarLibrary.ClientStoreHandler:getState().Settings.fov end
+				BedwarLibrary.FovController.setFOV = function(self, fov) 
+                    print("FOV CHANGED")
+                    return OldSetFov(BedwarLibrary.FovController, BedwarLibrary.ClientStoreHandler:getState().Settings.fov) 
+                end
+				BedwarLibrary.FovController.getFOV = function(self, fov)
+                    print("FOV GOTTED")
+                     return BedwarLibrary.ClientStoreHandler:getState().Settings.fov 
+                end
 			else
                 if OldSetFov then
                      BedwarLibrary.FovController.setFOV = OldSetFov

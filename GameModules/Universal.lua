@@ -462,6 +462,7 @@ do
         }
     )
 
+    --[[
     local mt = getrawmetatable(game)
     local backup = mt.__namecall
     if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
@@ -482,7 +483,7 @@ do
             end
         end)
         return backup(...)
-    end)
+    end)]]
 
 end
 
