@@ -1396,10 +1396,8 @@ do
         {ModName = "No FOV Change", ModDescription = "idk if it actually working",Keybind= "None"},
         function(args)
             if args then
-				
                 OldGetFov = BedwarLibrary.FovController.getFOV
                 OldSetFov = BedwarLibrary.FovController.setFOV
-
 				BedwarLibrary.FovController.setFOV = function(self, fov) return OldSetFov(self, BedwarLibrary.ClientStoreHandler:getState().Settings.fov) end
 				BedwarLibrary.FovController.getFOV = function(self, fov) return BedwarLibrary.ClientStoreHandler:getState().Settings.fov end
 			else
