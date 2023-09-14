@@ -264,6 +264,9 @@ local Client = require(ReplicatedStorage.TS.remotes).default.Client
 local InventoryUtil = require(ReplicatedStorage.TS.inventory["inventory-util"]).InventoryUtil
 
 BedwarLibrary = {
+
+    FovController = KnitClient.Controllers.FovController,
+
     EmoteMeta = require(ReplicatedStorage.TS.locker.emote["emote-meta"]).EmoteMeta,
 	KillEffectMeta = require(game.ReplicatedStorage.TS.locker["kill-effect"]["kill-effect-meta"]).KillEffectMeta,
 	KillEffectController = KnitClient.Controllers.KillEffectController,
@@ -1382,6 +1385,40 @@ do
     )
 end
 
+
+----------// Fov
+do
+
+    local OldGetFov
+    local OldSetFov
+
+    UtilityTab:newmod(
+        {ModName = "No FOV Change", ModDescription = "idk if it actually working",Keybind= "None"},
+        function(args)
+            if args then
+				
+                OldGetFov = BedwarLibrary.FovController.getFOV
+                OldSetFov = BedwarLibrary.FovController.setFOV
+
+				BedwarLibrary.FovController.setFOV = function(self, fov) return OldSetFov(self, BedwarLibrary.ClientStoreHandler:getState().Settings.fov) end
+				BedwarLibrary.FovController.getFOV = function(self, fov) return BedwarLibrary.ClientStoreHandler:getState().Settings.fov end
+			else
+                if OldSetFov then
+                     BedwarLibrary.FovController.setFOV = OldSetFov
+                end 
+
+                if OldGetFov then
+                    BedwarLibrary.FovController.getFOV = OldGetFov
+                end
+			end
+        end,
+        {
+        }
+    )
+end
+
+
+
 --------------------------------------// Cosmetics Tab
 ----------// Nyx Sound Handler
 do
@@ -2163,7 +2200,7 @@ do
         local args = {...}
         pcall(function()
             if (method == "FireServer" or method == "InvokeServer") then
-                if ((args[2] and args[2].chargedAttack and args[2].weapon)) and tick() > TimeToStartFakeLag then
+                if ((args[2] and args[2].chargedAttack and args[2].weapon)) then
                     TimeToStartFakeLag = tick() + 0.075
                     LagToWhatTime = tick()
                     task.spawn(function()
