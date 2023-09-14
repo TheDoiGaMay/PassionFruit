@@ -53,19 +53,15 @@ local function isAlive(plr)
 	end
 end
 
-local function isNotHoveringOverGui()
+local function IsHoveringOnGui()
 	local mousepos = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
 	for i, v in pairs(LocalPlayer.PlayerGui:GetGuiObjectsAtPosition(mousepos.X, mousepos.Y)) do
-		if v.Active then
-			return false
+		if v.Active and v.BackgroundTransparency > 0 then
+            print(v.Name .. " is in the way")
+			return true
 		end
 	end
-	for i, v in pairs(game:GetService("CoreGui"):GetGuiObjectsAtPosition(mousepos.X, mousepos.Y)) do
-		if v.Active then
-			return false
-		end
-	end
-	return true
+	return false
 end
 
 local function GetRemote(t)
@@ -425,7 +421,7 @@ do
                 if GetCurrentState.Game.matchState == 0 then return end
                 if pressed then else StartPlacing = nil return end
                 
-                if not isNotHoveringOverGui() then return end
+                if IsHoveringOnGui() then return end
                 if workspace:GetServerTimeNow() < NextClickTimer then return end
                 if BedwarLibrary.KatanaController.chargingMaid == nil then else return end
                 
