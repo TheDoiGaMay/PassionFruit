@@ -2023,6 +2023,7 @@ do
                         until BedwarLibrary.ClientStoreHandler:getState() --and not (BedwarLibrary.ClientStoreHandler:getState().Game.matchState == 0 )
                         oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
                         BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = SetEmoteName2[shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"]]
+                        LocalPlayer:SetAttribute("SprayType",SetEmoteName2[shared.IClientToggledProperty["Emote Adjuster"]["Selected Emote"]])
                     end)
                    
                 end
@@ -2045,6 +2046,8 @@ do
                         --LocalPlayer:SetAttribute("KillEffectType", KillEffectName[Value])
                         oldemote = BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray
                         BedwarLibrary.ClientStoreHandler:getState().Locker.selectedSpray = SetEmoteName2[Value]
+                        LocalPlayer:SetAttribute("SprayType",SetEmoteName2[Value])
+
                         --shared.IClientToggledProperty["Emote Adjuster"]["SavedEmote"] = Value
                     end
                 end
