@@ -1404,7 +1404,8 @@ do
                 end
 				BedwarLibrary.FovController.getFOV = function(self, fov)
                     print("FOV GOTTED")
-                     return BedwarLibrary.ClientStoreHandler:getState().Settings.fov 
+                    OldSetFov(BedwarLibrary.FovController, BedwarLibrary.ClientStoreHandler:getState().Settings.fov) 
+                    return BedwarLibrary.ClientStoreHandler:getState().Settings.fov 
                 end
 			else
                 if OldSetFov then
@@ -2069,7 +2070,7 @@ do
     local TheConnection
     local LagToWhatTime = tick()
     local TimeToStartFakeLag = tick()
-    local FirstTimeLagging = galse
+    local FirstTimeLagging = false
     local IsLagging = false
     BlantantTab:newmod(
         {ModName = "Fake Lag", ModDescription = "Uhm idk",Keybind= "None"},
