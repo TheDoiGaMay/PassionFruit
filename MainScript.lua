@@ -9,7 +9,7 @@ local Players = game:GetService("Players")
 --// Varibles
 local LocalPlayer = Players.LocalPlayer
 local MainFileDirectory = "IClientRework"
-local MainCodeDirectory = "IClientReworkCode"
+local MainCodeDirectory = "PassionFruit"
 local MainFileWebsiteDirectory = "PassionFruit"
 
 local PlaceSaveId = {
